@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'; // Using NavLink for active styling
 import './Navbar.css';
+// import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
 const Navbar = () => {
   return (
@@ -56,7 +57,7 @@ const Navbar = () => {
         </li>
 
         <li className="nav-item">
-          <NavLink to="/compromisedAccounts" className="nav-link">
+          <NavLink to="/CompromisedAccounts" className="nav-link">
             Compromised Accounts
           </NavLink>
         </li>
