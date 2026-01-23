@@ -146,7 +146,6 @@ export default function CompromisedAccounts() {
 
                       <button
                         onClick={() => setMenuIndex(menuIndex === i ? null : i)}
-                        onClick={() => setMenuIndex(menuIndex === i ? null : i)}
                         className="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-gray-100"
                       >
                         <MoreHorizontal size={16} />
