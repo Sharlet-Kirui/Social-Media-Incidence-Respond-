@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+.incident-whatsapp-container {
+  font-family: 'Poppins', sans-serif;
+  width: 100%; /* Fills the width provided by App.jsx padding */
+  display: flex;
+  flex-direction: column;
+  padding-top: 40px;
+  gap: 30px; /* Spacing between main sections */
+}
+
+/* --- 1. Header Section --- */
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-wrapper {
+  width: 71px;
+  height: 66px;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.header-text h1 {
+  font-weight: 700;
+  font-size: 25px;
+  margin: 0;
+  color: #000000;
+}
+
+.header-text p {
+  font-weight: 400;
+  font-size: 16px;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* --- 2. Stats Cards --- */
+.stats-container {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+}
+
+.stat-card {
+  background: #FFFEFE;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 250px;
+  height: 116px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-card h3 {
+  font-weight: 400;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  color: #000000;
+}
+
+.stat-number {
+  font-weight: 700;
+  font-size: 25px;
+  color: #000000;
+}
+
+/* --- 3. Action Bar (Filters & Add Button) --- */
+.action-bar {
+  display: flex;
+  justify-content: space-between; /* Pushes left and right actions apart */
+  align-items: center;
+  flex-wrap: wrap; /* Allows wrapping on small screens */
+  gap: 20px;
+}
+
+.left-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  box-sizing: border-box;
+  width: 180px;
+  height: 40px;
+  border: 1px solid #000000;
+  padding: 0 10px;
+  font-family: 'Poppins';
+  font-size: 16px;
+  color: #000000;
+}
+
+.btn-primary {
+  background: #0164A6;
+  color: #FFFFFF;
+  border: none;
+  height: 40px;
+  padding: 0 25px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* --- 4. Table Section --- */
+.table-container {
+  width: 100%;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.table-header {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  background: #D9D9D9;
+  align-items: center;
+}
+
+.th-cell {
+  font-family: 'Poppins';
+  font-weight: 700;
+  font-size: 18px;
+  color: #000000;
+  padding-left: 15px;
+  white-space: nowrap; /* Prevents header text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive Column Widths (Total = 100%) */
+.col-no { width: 8%; }
+.col-mobile { width: 22%; }
+.col-date { width: 22%; }
+.col-status { width: 24%; }
+.col-officer { width: 24%; }
+
+.table-body-empty {
+  height: 250px; /* Placeholder height */
+  background: white;
+}
+
+/* --- MODAL STYLES --- */
+
+/* The dark background overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent dimming */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* This centers the form perfectly */
+  z-index: 2000; /* Higher than Navbar (1000) */
+  backdrop-filter: blur(2px); /* Optional: Adds a slight blur to background */
+}
+
+/* The actual form card */
+.modal-content {
+  width: 345px; /* Exact width from design */
+  /* Height set to auto to fit content, or use min-height if strictly needed */
+  background: #FFFFFF;
+  border: 1px solid #000000;
+  border-radius: 20px;
+  padding: 30px 36px; /* Adjusted padding to match visual spacing */
+  box-sizing: border-box;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-title {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 38px;
+  color: #000000;
+  margin: 0;
+  text-align: left;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Vertical gap between fields */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Gap between Label and Input */
+  align-items: flex-start;
+}
+
+.form-group label {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  color: #1E1E1E;
+}
+
+.form-group input, 
+.form-group select {
+  box-sizing: border-box;
+  width: 100%; /* Fills the 345px container */
+  height: 40px;
+  background: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  border-radius: 8px;
+  padding: 0 16px;
+  
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #1E1E1E;
+  outline: none;
+}
+
+/* Placeholder styling */
+.form-group input::placeholder {
+  color: #B3B3B3;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #0164A6;
+}
+
+/* Specific styling for the Select dropdown arrow usually handled by browser,
+   but basic height/padding ensures it looks correct */
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn-add {
+  width: 110px;
+  height: 42px;
+  background: #0164A6;
+  border-radius: 4px; /* Default button radius or 0 if preferred */
+  border: none;
+  
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-add:hover {
+  background: #015086;
+}
+
+/* Simple animation for popup */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
