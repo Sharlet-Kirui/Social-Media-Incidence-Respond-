@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Plus,
-  Search,
-  Edit2,
-  MoreHorizontal,
-  Trash,
-  Copy,
-} from "lucide-react";
+import { Plus, Search, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 
 const emptyForm = {
   accountNo: "",
@@ -68,7 +61,6 @@ export default function CompromisedAccounts() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="bg-white rounded-xl shadow-sm p-6">
-
         {/* Top Bar */}
         <div className="flex justify-between mb-6">
           <button
@@ -80,7 +72,10 @@ export default function CompromisedAccounts() {
           </button>
 
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+            <Search
+              className="absolute left-3 top-2.5 text-gray-400"
+              size={18}
+            />
             <input
               placeholder="Search"
               className="pl-10 pr-4 py-2 border rounded-full text-sm"
@@ -142,9 +137,7 @@ export default function CompromisedAccounts() {
                       </button>
 
                       <button
-                        onClick={() =>
-                          setMenuIndex(menuIndex === i ? null : i)
-                        }
+                        onClick={() => setMenuIndex(menuIndex === i ? null : i)}
                         className="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-gray-100"
                       >
                         <MoreHorizontal size={16} />
@@ -164,7 +157,7 @@ export default function CompromisedAccounts() {
                           onClick={() => handleDelete(i)}
                           className="flex items-center gap-2 px-4 py-2 w-full text-red-500 hover:bg-gray-100"
                         >
-                          <Trash className = 'text-white' size={14} /> Delete
+                          <Trash className="text-white" size={14} /> Delete
                         </button>
                       </div>
                     )}
