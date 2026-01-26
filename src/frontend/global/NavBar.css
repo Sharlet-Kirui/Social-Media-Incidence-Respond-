@@ -30,7 +30,7 @@
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 30px;
+  gap: 5x;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -43,6 +43,7 @@
   height: 100%;
   display: flex;
   align-items: center;
+  margin-right: 30px;
 }
 
 .nav-link {
@@ -101,3 +102,4 @@
   background-color: #f5f5f5;
   color: #007bff;
 }
+

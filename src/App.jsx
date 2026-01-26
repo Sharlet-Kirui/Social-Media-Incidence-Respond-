@@ -9,6 +9,8 @@ import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
 // Import your new component
 import IncidentWhatsApp from './frontend/components/IncidentWhatsApp';
+import Profile from './frontend/components/Profile';
+
 
 function App() {
   return (
@@ -36,8 +38,9 @@ function App() {
           <Route path="/verification" element={<h1>Verification Page</h1>} />
           <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
           <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
-          <Route path="/compromisedAccounts" element={<h1>Compromised Accounts</h1>} />
           <Route path="/governmentOfficials" element={<h1>Government Officials</h1>} />
+          <Route path="/Profile" element={<Profile />} />
+
         </Routes>
       </div>
     </Router>
