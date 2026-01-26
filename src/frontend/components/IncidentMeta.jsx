@@ -1,30 +1,87 @@
-// src/frontend/components/IncidentMeta.jsx
-import React from 'react';
-import './Incidents.css';
+import { useState } from "react";
+import "./Incidents.css";
+
+const StatCards = () => (
+  <div className="stats">
+    {["Active", "Pending", "Resolved"].map((s) => (
+      <div className="stat-card" key={s}>
+        <p>{s}</p>
+        <h3>0</h3>
+      </div>
+    ))}
+  </div>
+);
+
+const headers = [
+  "No",
+  "Account Name",
+  "Platform",
+  "Date reported",
+  "Status",
+  "Officer in charge",
+  "Ref Number",
+];
+
+const AddIncidentModal = ({ onClose }) => (
+  <div className="modal-overlay">
+    <div className="modal">
+      <span className="modal-close" onClick={onClose}>✕</span>
+      <h3>Add New Incident</h3>
+
+      <div className="modal-form">
+        <input placeholder="Account Name" />
+        <select>
+          <option>Facebook</option>
+          <option>Instagram</option>
+        </select>
+        <input type="date" />
+        <select>
+          <option>Status</option>
+          <option>Active</option>
+          <option>Pending</option>
+          <option>Resolved</option>
+        </select>
+        <input placeholder="Officer in charge" />
+        <input placeholder="Ref Number" />
+      </div>
+
+      <div className="modal-actions">
+        <button className="cancel-btn" onClick={onClose}>Cancel</button>
+        <button className="save-btn">Save Incident</button>
+      </div>
+    </div>
+  </div>
+);
 
 const IncidentMeta = () => {
-  const columns = ["No.", "Account Name", "Platform", "Date Reported", "Status", "Officer in Charge", "Ref Number"];
+  const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="incident-page">
-      <div className="incident-icon-placeholder" style={{background: '#1877F2'}}></div>
-      <h1 className="page-title">Meta Incidents</h1>
-      <p style={{position: 'absolute', left: '135px', top: '160px', color: 'gray'}}>0 incidents</p>
+    <div className="incidents-page">
+      <h2>Meta Incidents</h2>
 
-      <div className="stat-box active"><span className="stat-label">Active</span><span className="stat-count">0</span></div>
-      <div className="stat-box pending"><span className="stat-label">Pending</span><span className="stat-count">0</span></div>
-      <div className="stat-box resolved"><span className="stat-label">Resolved</span><span className="stat-count">0</span></div>
+      <StatCards />
 
-      <button className="btn-add-incident">Add New Incident</button>
-
-      <div className="main-table-container">
-        <div className="table-header-row">
-          {columns.map((col, index) => (
-            <div key={index} className="header-item">{col}</div>
-          ))}
-        </div>
-        <div className="empty-row">No data available for Meta.</div>
+      <div className="filters">
+        <input type="date" />
+        <select><option>Status</option></select>
+        <button className="apply-btn">Apply</button>
       </div>
+
+      <button className="add-btn" onClick={() => setShowModal(true)}>
+        Add New Incident
+      </button>
+
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
+          </thead>
+          <tbody />
+        </table>
+      </div>
+
+      {showModal && <AddIncidentModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };

@@ -1,27 +1,82 @@
-// src/frontend/components/IncidentTikTok.jsx
-import React from 'react';
-import './Incidents.css';
+import { useState } from "react";
+import "./Incidents.css";
+
+const StatCards = () => (
+  <div className="stats">
+    {["Active", "Pending", "Resolved"].map((s) => (
+      <div className="stat-card" key={s}>
+        <p>{s}</p>
+        <h3>0</h3>
+      </div>
+    ))}
+  </div>
+);
+
+const headers = [
+  "No",
+  "Incident",
+  "URL",
+  "Date reported",
+  "Status",
+  "Officer responsible",
+];
+
+const AddIncidentModal = ({ onClose }) => (
+  <div className="modal-overlay">
+    <div className="modal">
+      <span className="modal-close" onClick={onClose}>✕</span>
+      <h3>Add New Incident</h3>
+
+      <div className="modal-form">
+        <input placeholder="Incident" />
+        <input placeholder="URL" />
+        <input type="date" />
+        <select>
+          <option>Status</option>
+          <option>Active</option>
+          <option>Pending</option>
+          <option>Resolved</option>
+        </select>
+        <input placeholder="Officer responsible" />
+      </div>
+
+      <div className="modal-actions">
+        <button className="cancel-btn" onClick={onClose}>Cancel</button>
+        <button className="save-btn">Save Incident</button>
+      </div>
+    </div>
+  </div>
+);
 
 const IncidentTikTok = () => {
-  const columns = ["No.", "Incident", "URL", "Date Reported", "Status", "Officer Responsible"];
+  const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="incident-page">
-      <div className="incident-icon-placeholder" style={{background: '#000000'}}></div>
-      <h1 className="page-title">TikTok Incidents</h1>
+    <div className="incidents-page">
+      <h2>TikTok Incidents</h2>
 
-      <div className="stat-box active"><span className="stat-label">Active</span><span className="stat-count">0</span></div>
-      <div className="stat-box pending"><span className="stat-label">Pending</span><span className="stat-count">0</span></div>
-      <div className="stat-box resolved"><span className="stat-label">Resolved</span><span className="stat-count">0</span></div>
+      <StatCards />
 
-      <div className="main-table-container">
-        <div className="table-header-row">
-          {columns.map((col, index) => (
-            <div key={index} className="header-item">{col}</div>
-          ))}
-        </div>
-        <div className="empty-row">No data available for TikTok.</div>
+      <div className="filters">
+        <input type="date" />
+        <select><option>Status</option></select>
+        <button className="apply-btn">Apply</button>
       </div>
+
+      <button className="add-btn" onClick={() => setShowModal(true)}>
+        Add New Incident
+      </button>
+
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
+          </thead>
+          <tbody />
+        </table>
+      </div>
+
+      {showModal && <AddIncidentModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };
