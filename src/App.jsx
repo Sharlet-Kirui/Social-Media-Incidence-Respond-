@@ -9,6 +9,7 @@ import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
 // Import your new component
 import IncidentWhatsApp from './frontend/components/IncidentWhatsApp';
+import LinkedInIncidents from './frontend/components/IncidentLinkedIn';
 import Profile from './frontend/components/Profile';
 import Verifications from './frontend/components/Verifications/xverifications';
 import Metaverifications from './frontend/components/Verifications/Metaverifications';
@@ -31,10 +32,17 @@ function App() {
           <Route path="/incidence/telegram" element={<IncidentTelegram />} />
           <Route path="/incidence/tiktok" element={<IncidentTikTok />} />
           <Route path="/incidence/whatsapp" element={<IncidentWhatsApp />} />
-          <Route path="/incidence/linkedin" element={<h1>LinkedIn Incidents</h1>} />
-          <Route path="/verification/meta" element={<Metaverifications />} />
-          <Route path="/verification/x" element={<Verifications />} />
-          <Route path="/compromisedaccounts" element={<CompromisedAccounts />} />
+          
+          {/* Placeholders for other routes */}
+          <Route path="/incidence/X" element={<h1>X Incidents</h1>} />
+          <Route path="/incidence/meta" element={<h1>Meta Incidents</h1>} />
+          <Route path="/incidence/telegram" element={<h1>Telegram Incidents</h1>} />
+          <Route path="/incidence/tiktok" element={<h1>TikTok Incidents</h1>} />
+          <Route path="/incidence/linkedIn" element={<h1>LinkedIn Incidents</h1>} />
+
+          <Route path="/verification/meta" element={<Metaverifications/>} />
+          <Route path="/verification/X" element={<Verifications/>} />
+          <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
           <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
           <Route path="/governmentOfficials" element={<h1>Government Officials</h1>} />
           <Route path="/profile" element={<Profile />} />
