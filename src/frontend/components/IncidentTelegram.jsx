@@ -14,12 +14,10 @@ const StatCards = () => (
 
 const headers = [
   "No",
-  "Account Name",
-  "Platform",
-  "URL",
+  "Incident",
+  "Username",
   "Date reported",
   "Status",
-  "Officer responsible",
 ];
 
 const AddIncidentModal = ({ onClose }) => (
@@ -28,16 +26,12 @@ const AddIncidentModal = ({ onClose }) => (
       <h2 className="modal-title">Add New Incident</h2>
       <form className="modal-form">
         <div className="form-group">
-          <label>Account Name</label>
-          <input placeholder="Account Name" />
+          <label>Incident</label>
+          <input placeholder="Incident" />
         </div>
         <div className="form-group">
-          <label>Platform</label>
-          <input placeholder="Platform (X / Twitter)" />
-        </div>
-        <div className="form-group">
-          <label>URL</label>
-          <input placeholder="URL" />
+          <label>Username</label>
+          <input placeholder="Username" />
         </div>
         <div className="form-group">
           <label>Date Reported</label>
@@ -52,10 +46,6 @@ const AddIncidentModal = ({ onClose }) => (
             <option>Resolved</option>
           </select>
         </div>
-        <div className="form-group">
-          <label>Officer responsible</label>
-          <input placeholder="Officer responsible" />
-        </div>
         <div className="modal-actions">
           <button type="button" className="btn-add">Add</button>
           <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
@@ -65,12 +55,12 @@ const AddIncidentModal = ({ onClose }) => (
   </div>
 );
 
-const IncidentX = () => {
+const IncidentTelegram = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="incidents-page">
-      <h2>X (Twitter) Incidents</h2>
+      <h2>Telegram Incidents</h2>
 
       <StatCards />
 
@@ -106,6 +96,4 @@ const IncidentX = () => {
   );
 };
 
-export default IncidentX;
-//import
-//
+export default IncidentTelegram;

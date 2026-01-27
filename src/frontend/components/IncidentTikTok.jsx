@@ -14,8 +14,7 @@ const StatCards = () => (
 
 const headers = [
   "No",
-  "Account Name",
-  "Platform",
+  "Incident",
   "URL",
   "Date reported",
   "Status",
@@ -28,12 +27,8 @@ const AddIncidentModal = ({ onClose }) => (
       <h2 className="modal-title">Add New Incident</h2>
       <form className="modal-form">
         <div className="form-group">
-          <label>Account Name</label>
-          <input placeholder="Account Name" />
-        </div>
-        <div className="form-group">
-          <label>Platform</label>
-          <input placeholder="Platform (X / Twitter)" />
+          <label>Incident</label>
+          <input placeholder="Incident" />
         </div>
         <div className="form-group">
           <label>URL</label>
@@ -65,12 +60,12 @@ const AddIncidentModal = ({ onClose }) => (
   </div>
 );
 
-const IncidentX = () => {
+const IncidentTikTok = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="incidents-page">
-      <h2>X (Twitter) Incidents</h2>
+      <h2>TikTok Incidents</h2>
 
       <StatCards />
 
@@ -106,6 +101,4 @@ const IncidentX = () => {
   );
 };
 
-export default IncidentX;
-//import
-//
+export default IncidentTikTok;

@@ -16,10 +16,10 @@ const headers = [
   "No",
   "Account Name",
   "Platform",
-  "URL",
   "Date reported",
   "Status",
-  "Officer responsible",
+  "Officer in charge",
+  "Ref Number",
 ];
 
 const AddIncidentModal = ({ onClose }) => (
@@ -33,11 +33,10 @@ const AddIncidentModal = ({ onClose }) => (
         </div>
         <div className="form-group">
           <label>Platform</label>
-          <input placeholder="Platform (X / Twitter)" />
-        </div>
-        <div className="form-group">
-          <label>URL</label>
-          <input placeholder="URL" />
+          <select>
+            <option>Facebook</option>
+            <option>Instagram</option>
+          </select>
         </div>
         <div className="form-group">
           <label>Date Reported</label>
@@ -53,8 +52,12 @@ const AddIncidentModal = ({ onClose }) => (
           </select>
         </div>
         <div className="form-group">
-          <label>Officer responsible</label>
-          <input placeholder="Officer responsible" />
+          <label>Officer in charge</label>
+          <input placeholder="Officer in charge" />
+        </div>
+        <div className="form-group">
+          <label>Ref Number</label>
+          <input placeholder="Ref Number" />
         </div>
         <div className="modal-actions">
           <button type="button" className="btn-add">Add</button>
@@ -65,12 +68,12 @@ const AddIncidentModal = ({ onClose }) => (
   </div>
 );
 
-const IncidentX = () => {
+const IncidentMeta = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="incidents-page">
-      <h2>X (Twitter) Incidents</h2>
+      <h2>Meta Incidents</h2>
 
       <StatCards />
 
@@ -92,6 +95,7 @@ const IncidentX = () => {
             <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
           </thead>
           <tbody>
+            {/* Example empty row */}
             <tr>
               {headers.map((h, i) => (
                 <td key={i} style={{ textAlign: 'center', color: '#aaa' }}>-</td>
@@ -101,11 +105,10 @@ const IncidentX = () => {
         </table>
       </div>
 
+      {/* Modal for adding new incident */}
       {showModal && <AddIncidentModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };
 
-export default IncidentX;
-//import
-//
+export default IncidentMeta;
