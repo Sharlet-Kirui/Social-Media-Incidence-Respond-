@@ -18,7 +18,6 @@ import IncidentX from './frontend/components/IncidentX';
 import IncidentTelegram from './frontend/components/IncidentTelegram';
 import IncidentTikTok from './frontend/components/IncidentTikTok';
 import IncidentMeta from './frontend/components/IncidentMeta';
-import Officials from './frontend/components/GovernmentOfficials/Officials';
 
 function App() {
   return (
