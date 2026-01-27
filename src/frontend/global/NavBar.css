@@ -1,0 +1,105 @@
+/* Navbar.css */
+
+/* The main container based on your snippet */
+.navbar {
+  position: absolute; /* As requested */
+  top: 0px;
+  left: 0px;
+  width: 100%; /* Spans the full width of the window */
+  height: 64px; /* As requested */
+  
+  background-color: #ffffff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05); /* Adds a subtle shadow like the image */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px; /* Internal spacing */
+  box-sizing: border-box;
+  z-index: 1000; /* Ensures it stays on top of other content */
+}
+
+/* Logo styling */
+.navbar-logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #333;
+  text-decoration: none;
+}
+
+/* Link Container */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 5x;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  align-items: center;
+}
+
+/* Individual Links */
+.nav-item {
+  position: relative; /* Needed for dropdown positioning */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 0 10px;
+  transition: color 0.3s ease;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link:hover {
+  color: #000;
+}
+
+/* --- Active State Highlighting --- */
+/* React Router adds the 'active' class automatically to NavLink */
+.nav-link.active {
+  color: #007bff; /* Change this to your preferred active color */
+  border-bottom: 3px solid #007bff; /* Underline effect */
+}
+
+/* --- Dropdown Styling --- */
+.dropdown-menu {
+  position: absolute;
+  top: 64px; /* Pushes it exactly below the navbar height */
+  left: 0;
+  background-color: white;
+  border: 1px solid #eee;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+  min-width: 180px;
+  list-style: none;
+  padding: 10px 0;
+  display: none; /* Hidden by default */
+  flex-direction: column;
+  border-radius: 0 0 4px 4px;
+}
+
+/* Show dropdown on hover */
+.nav-item:hover .dropdown-menu {
+  display: flex;
+}
+
+.dropdown-link {
+  text-decoration: none;
+  color: #555;
+  padding: 10px 20px;
+  display: block;
+  font-size: 14px;
+}
+
+.dropdown-link:hover {
+  background-color: #f5f5f5;
+  color: #007bff;
+}
+
