@@ -12,7 +12,7 @@ const emptyForm = {
   officer: "",
 };
 
-export default function CompromisedAccounts() {
+export default function Verifications() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
@@ -97,8 +97,8 @@ export default function CompromisedAccounts() {
                   "URL",
                   "Date Reported",
                   "Status",
-                  "Officer",
-                  "Action",
+                  "Officer Responsible",
+                  
                 ].map((h) => (
                   <th key={h} className="px-4 py-3 text-left">
                     {h}
