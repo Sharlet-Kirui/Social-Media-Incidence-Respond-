@@ -13,14 +13,11 @@ import LinkedInIncidents from './frontend/components/IncidentLinkedIn';
 import Profile from './frontend/components/Profile';
 import Verifications from './frontend/components/Verifications/xverifications';
 import Metaverifications from './frontend/components/Verifications/Metaverifications';
-<<<<<<< HEAD
 import IncidentX from './frontend/components/IncidentX';
 import IncidentTelegram from './frontend/components/IncidentTelegram';
 import IncidentTikTok from './frontend/components/IncidentTikTok';
 import IncidentMeta from './frontend/components/IncidentMeta';
-=======
 import Officials from './frontend/components/GovernmentOfficials/Officials';
->>>>>>> 1963361 (add gvt officials page)
 
 function App() {
   return (
@@ -48,14 +45,9 @@ function App() {
           <Route path="/verification/X" element={<Verifications/>} />
           <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
           <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
-<<<<<<< HEAD
-          <Route path="/governmentOfficials" element={<h1>Government Officials</h1>} />
-          <Route path="/profile" element={<Profile />} />
-=======
-          <Route path="/governmentOfficials" element={<Officials/>} />
-          <Route path="/Profile" element={<Profile />} />
 
->>>>>>> 1963361 (add gvt officials page)
+          <Route path="/governmentOfficials" element={<Officials/>} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
