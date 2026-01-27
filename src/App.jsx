@@ -12,6 +12,7 @@ import IncidentWhatsApp from './frontend/components/IncidentWhatsApp';
 import Profile from './frontend/components/Profile';
 import Verifications from './frontend/components/Verifications/xverifications';
 import Metaverifications from './frontend/components/Verifications/Metaverifications';
+import Officials from './frontend/components/GovernmentOfficials/Officials';
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
           <Route path="/verification/X" element={<Verifications/>} />
           <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
           <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
-          <Route path="/governmentOfficials" element={<h1>Government Officials</h1>} />
+          <Route path="/governmentOfficials" element={<Officials/>} />
           <Route path="/Profile" element={<Profile />} />
 
         </Routes>
