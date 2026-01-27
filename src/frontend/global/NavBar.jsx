@@ -36,7 +36,7 @@ const Navbar = () => {
 
           <ul className="dropdown-menu">
             <li>
-              <NavLink to="/incidence/X" className="dropdown-link">
+              <NavLink to="/incidence/x" className="dropdown-link">
                 X
               </NavLink>
             </li>
