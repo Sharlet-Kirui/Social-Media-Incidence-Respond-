@@ -18,6 +18,7 @@ import IncidentX from './frontend/components/IncidentX';
 import IncidentTelegram from './frontend/components/IncidentTelegram';
 import IncidentTikTok from './frontend/components/IncidentTikTok';
 import IncidentMeta from './frontend/components/IncidentMeta';
+import Officials from './frontend/components/GovernmentOfficials/Officials';
 
 function App() {
   return (
@@ -45,9 +46,9 @@ function App() {
           <Route path="/verification/X" element={<Verifications/>} />
           <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
           <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
-          <Route path="/governmentOfficials" element={<Officials/>} />
-          <Route path="/Profile" element={<Profile />} />
 
+          <Route path="/governmentOfficials" element={<Officials/>} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>
