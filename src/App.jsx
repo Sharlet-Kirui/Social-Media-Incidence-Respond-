@@ -10,7 +10,8 @@ import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 // Import your new component
 import IncidentWhatsApp from './frontend/components/IncidentWhatsApp';
 import Profile from './frontend/components/Profile';
-
+import Verifications from './frontend/components/Verifications/xverifications';
+import Metaverifications from './frontend/components/Verifications/Metaverifications';
 
 function App() {
   return (
@@ -35,7 +36,8 @@ function App() {
           <Route path="/incidence/tiktok" element={<h1>TikTok Incidents</h1>} />
           <Route path="/incidence/linkedIn" element={<h1>LinkedIn Incidents</h1>} />
 
-          <Route path="/verification" element={<h1>Verification Page</h1>} />
+          <Route path="/verification/meta" element={<Metaverifications/>} />
+          <Route path="/verification/X" element={<Verifications/>} />
           <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
           <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
           <Route path="/governmentOfficials" element={<h1>Government Officials</h1>} />
