@@ -18,7 +18,7 @@ import IncidentX from './frontend/components/IncidentX';
 import IncidentTelegram from './frontend/components/IncidentTelegram';
 import IncidentTikTok from './frontend/components/IncidentTikTok';
 import IncidentMeta from './frontend/components/IncidentMeta';
-import Officials from './frontend/components/GovernmentOfficials/Officials';
+
 
 function App() {
   return (
@@ -40,7 +40,7 @@ function App() {
           <Route path="/incidence/meta" element={<h1>Meta Incidents</h1>} />
           <Route path="/incidence/telegram" element={<h1>Telegram Incidents</h1>} />
           <Route path="/incidence/tiktok" element={<h1>TikTok Incidents</h1>} />
-          <Route path="/incidence/linkedIn" element={<h1>LinkedIn Incidents</h1>} />
+          <Route path="/incidence/linkedIn" element={<LinkedInIncidents/>} />
 
           <Route path="/verification/meta" element={<Metaverifications/>} />
           <Route path="/verification/X" element={<Verifications/>} />
