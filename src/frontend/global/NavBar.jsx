@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom"; // Using NavLink for active styling
-import "./Navbar.css";
-import { User, Settings, LogOut } from "lucide-react";
+import "./NavBar.css";
+import { User, Settings, LogOut, LockKeyhole } from "lucide-react";
 
 // import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
@@ -29,14 +29,14 @@ const Navbar = () => {
         {/* Incidence Link with Dropdown */}
         <li className="nav-item">
           {/* Note: You can make the main label a link or just a span */}
-          <NavLink to="/incidence" className="nav-link">
+          <NavLink to="/incidence/X" className="nav-link">
             Incidence{" "}
             <span style={{ fontSize: "10px", marginLeft: "5px" }}>▼</span>
           </NavLink>
 
           <ul className="dropdown-menu">
             <li>
-              <NavLink to="/incidence/X" className="dropdown-link">
+              <NavLink to="/incidence/x" className="dropdown-link">
                 X
               </NavLink>
             </li>
@@ -70,7 +70,7 @@ const Navbar = () => {
 
         {/* Verification Link with Dropdown */}
         <li className="nav-item">
-          <NavLink to="/verification" className="nav-link">
+          <NavLink to="/verification/X" className="nav-link">
             Verification{" "}
             <span style={{ fontSize: "10px", marginLeft: "5px" }}>▼</span>
           </NavLink>
@@ -126,6 +126,16 @@ const Navbar = () => {
               >
                 <LogOut size={16} style={{ marginRight: "6px" }} />
                 Logout
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/SignIn"
+                className="dropdown-link"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+              <LockKeyhole size={16} style={{ marginRight: "6px" }} />
+                Login
               </NavLink>
             </li>
           </ul>

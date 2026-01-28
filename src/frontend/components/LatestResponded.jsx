@@ -1,5 +1,5 @@
 import React from "react";
-import LatestRespondedTable from "../components/LatestRespondedTable";
+import LatestRespondedTable from "./LatestRespondedTable.jsx";
 
 const LatestResponded = () => {
   

@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import '../global.css';
+import './global.css';
 
 const emptyForm = {
-  accountName: "",
-  platform: "X (Twitter)",
+  accountName: "", // Maps to Account Name / Description
   url: "",
   dateReported: "",
   status: "Active",
   officer: "",
 };
 
-export default function XVerifications() {
+export default function IncidentLinkedIn() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
@@ -20,16 +19,9 @@ export default function XVerifications() {
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // 1. Temporary State (What the user selects in the inputs)
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-
-  // 2. Active State (What is actually applied to the table)
-  const [appliedFilters, setAppliedFilters] = useState({
-    date: "",
-    status: ""
-  });
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
 
   // Calculate Stats
   const activeCount = rows.filter(r => r.status === "Active").length;
@@ -74,8 +66,6 @@ export default function XVerifications() {
   };
 
   // --- Filter Logic ---
-  
-  // Triggered when "Apply Filters" is clicked
   const handleApplyFilters = () => {
     setAppliedFilters({
       date: tempFilterDate,
@@ -83,19 +73,18 @@ export default function XVerifications() {
     });
   };
 
-  // Combined Filter: Search + Date + Status
   const filteredRows = rows.filter(row => {
-    // 1. Search Check
+    // 1. Search Check (Name or URL)
     const matchesSearch = 
       row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       row.url.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // 2. Date Check (If filter is set, match exact date)
+    // 2. Date Check
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
       : true;
 
-    // 3. Status Check (If filter is set, match status)
+    // 3. Status Check
     const matchesStatus = appliedFilters.status 
       ? row.status === appliedFilters.status 
       : true;
@@ -109,13 +98,14 @@ export default function XVerifications() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
+            {/* LinkedIn Logo SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/>
+              <path d="M19 3H5C3.895 3 3 3.895 3 5V19C3 20.105 3.895 21 5 21H19C20.105 21 21 20.105 21 19V5C21 3.895 20.105 3 19 3ZM8.5 19H5.5V9H8.5V19ZM7 7.69C6.17 7.69 5.5 7.02 5.5 6.19C5.5 5.36 6.17 4.69 7 4.69C7.83 4.69 8.5 5.36 8.5 6.19C8.5 7.02 7.83 7.69 7 7.69ZM18.5 19H15.5V14.5C15.5 13.12 14.38 12 13 12C11.62 12 10.5 13.12 10.5 14.5V19H7.5V9H10.5V10.3C11.16 9.38 12.38 8.8 13.5 8.8C16.26 8.8 18.5 11.04 18.5 13.8V19Z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>X Verifications</h1>
+          <h1>LinkedIn Incidents</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
@@ -138,18 +128,17 @@ export default function XVerifications() {
 
       {/* 3. Actions Section */}
       <div className="action-bar">
-        {/* Left: Filters (Updated to match Form) */}
+        {/* Left: Filters */}
         <div className="left-actions">
-          
-          {/* Date Picker Filter */}
-          <input 
+           {/* Date Filter */}
+           <input 
             type="date" 
             className="filter-input" 
             value={tempFilterDate}
             onChange={(e) => setTempFilterDate(e.target.value)}
           />
 
-          {/* Status Dropdown Filter */}
+          {/* Status Filter */}
           <select 
             className="filter-input"
             value={tempFilterStatus}
@@ -160,17 +149,15 @@ export default function XVerifications() {
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
-
-          <button className="btn-primary" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
+          
+          <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
 
         {/* Middle: Search */}
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Account or URL" 
+              placeholder="Search Name or URL" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -188,26 +175,24 @@ export default function XVerifications() {
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-xv-no">No.</div>
-          <div className="th-cell col-xv-name">Account Name</div>
-          <div className="th-cell col-xv-platform">Platform</div>
-          <div className="th-cell col-xv-url">URL</div>
-          <div className="th-cell col-xv-date">Date Reported</div>
-          <div className="th-cell col-xv-status">Status</div>
-          <div className="th-cell col-xv-officer">Officer</div>
-          <div className="th-cell col-xv-action">Action</div>
+          <div className="th-cell col-li-no">No.</div>
+          <div className="th-cell col-li-name">Account Name / Description</div>
+          <div className="th-cell col-li-url">URL</div>
+          <div className="th-cell col-li-date">Date Reported</div>
+          <div className="th-cell col-li-status">Status</div>
+          <div className="th-cell col-li-officer">Officer Responsible</div>
+          <div className="th-cell col-li-action">Action</div>
         </div>
 
         {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-xv-no">{i + 1}</div>
-              <div className="td-cell col-xv-name">{row.accountName}</div>
-              <div className="td-cell col-xv-platform">{row.platform}</div>
-              <div className="td-cell col-xv-url">{row.url}</div>
-              <div className="td-cell col-xv-date">{row.dateReported}</div>
-              <div className="td-cell col-xv-status">
+              <div className="td-cell col-li-no">{i + 1}</div>
+              <div className="td-cell col-li-name">{row.accountName}</div>
+              <div className="td-cell col-li-url">{row.url}</div>
+              <div className="td-cell col-li-date">{row.dateReported}</div>
+              <div className="td-cell col-li-status">
                 <span className={`status-badge ${
                     row.status === "Active" ? "status-active" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
@@ -215,9 +200,9 @@ export default function XVerifications() {
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-xv-officer">{row.officer}</div>
+              <div className="td-cell col-li-officer">{row.officer}</div>
               
-              <div className="td-cell col-xv-action relative">
+              <div className="td-cell col-li-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
                     <Edit2 size={16} />
@@ -254,20 +239,11 @@ export default function XVerifications() {
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Account Name</label>
+                <label>Account Name / Description</label>
                 <input 
                   placeholder="Value" 
                   value={formData.accountName} 
                   onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Platform</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.platform} 
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
                 />
               </div>
 

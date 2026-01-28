@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import '../global.css';
+import '../global.css'; // Ensure this points to your global.css
 
 const emptyForm = {
   accountName: "",
-  platform: "X (Twitter)",
+  platform: "",
   url: "",
   dateReported: "",
   status: "Active",
   officer: "",
 };
 
-export default function XVerifications() {
+export default function Officials() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
@@ -20,16 +20,9 @@ export default function XVerifications() {
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // 1. Temporary State (What the user selects in the inputs)
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-
-  // 2. Active State (What is actually applied to the table)
-  const [appliedFilters, setAppliedFilters] = useState({
-    date: "",
-    status: ""
-  });
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
 
   // Calculate Stats
   const activeCount = rows.filter(r => r.status === "Active").length;
@@ -74,8 +67,6 @@ export default function XVerifications() {
   };
 
   // --- Filter Logic ---
-  
-  // Triggered when "Apply Filters" is clicked
   const handleApplyFilters = () => {
     setAppliedFilters({
       date: tempFilterDate,
@@ -83,19 +74,15 @@ export default function XVerifications() {
     });
   };
 
-  // Combined Filter: Search + Date + Status
   const filteredRows = rows.filter(row => {
-    // 1. Search Check
     const matchesSearch = 
       row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.url.toLowerCase().includes(searchTerm.toLowerCase());
+      row.platform.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // 2. Date Check (If filter is set, match exact date)
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
       : true;
 
-    // 3. Status Check (If filter is set, match status)
     const matchesStatus = appliedFilters.status 
       ? row.status === appliedFilters.status 
       : true;
@@ -109,13 +96,14 @@ export default function XVerifications() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
+            {/* Government / Officials Icon SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/>
+              <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>X Verifications</h1>
+          <h1>Government Officials</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
@@ -138,18 +126,14 @@ export default function XVerifications() {
 
       {/* 3. Actions Section */}
       <div className="action-bar">
-        {/* Left: Filters (Updated to match Form) */}
+        {/* Left: Filters */}
         <div className="left-actions">
-          
-          {/* Date Picker Filter */}
-          <input 
+           <input 
             type="date" 
             className="filter-input" 
             value={tempFilterDate}
             onChange={(e) => setTempFilterDate(e.target.value)}
           />
-
-          {/* Status Dropdown Filter */}
           <select 
             className="filter-input"
             value={tempFilterStatus}
@@ -160,17 +144,14 @@ export default function XVerifications() {
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
-
-          <button className="btn-primary" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
+          <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
 
         {/* Middle: Search */}
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Account or URL" 
+              placeholder="Search Name or Platform" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -188,26 +169,26 @@ export default function XVerifications() {
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-xv-no">No.</div>
-          <div className="th-cell col-xv-name">Account Name</div>
-          <div className="th-cell col-xv-platform">Platform</div>
-          <div className="th-cell col-xv-url">URL</div>
-          <div className="th-cell col-xv-date">Date Reported</div>
-          <div className="th-cell col-xv-status">Status</div>
-          <div className="th-cell col-xv-officer">Officer</div>
-          <div className="th-cell col-xv-action">Action</div>
+          <div className="th-cell col-ca-no">No.</div>
+          <div className="th-cell col-ca-name">Account Name</div>
+          <div className="th-cell col-ca-platform">Platform</div>
+          <div className="th-cell col-ca-url">URL</div>
+          <div className="th-cell col-ca-date">Date Reported</div>
+          <div className="th-cell col-ca-status">Status</div>
+          <div className="th-cell col-ca-officer">Officer</div>
+          <div className="th-cell col-ca-action">Action</div>
         </div>
 
         {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-xv-no">{i + 1}</div>
-              <div className="td-cell col-xv-name">{row.accountName}</div>
-              <div className="td-cell col-xv-platform">{row.platform}</div>
-              <div className="td-cell col-xv-url">{row.url}</div>
-              <div className="td-cell col-xv-date">{row.dateReported}</div>
-              <div className="td-cell col-xv-status">
+              <div className="td-cell col-ca-no">{i + 1}</div>
+              <div className="td-cell col-ca-name">{row.accountName}</div>
+              <div className="td-cell col-ca-platform">{row.platform}</div>
+              <div className="td-cell col-ca-url">{row.url}</div>
+              <div className="td-cell col-ca-date">{row.dateReported}</div>
+              <div className="td-cell col-ca-status">
                 <span className={`status-badge ${
                     row.status === "Active" ? "status-active" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
@@ -215,9 +196,9 @@ export default function XVerifications() {
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-xv-officer">{row.officer}</div>
+              <div className="td-cell col-ca-officer">{row.officer}</div>
               
-              <div className="td-cell col-xv-action relative">
+              <div className="td-cell col-ca-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
                     <Edit2 size={16} />

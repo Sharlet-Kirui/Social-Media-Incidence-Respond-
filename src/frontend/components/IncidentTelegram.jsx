@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import '../global.css';
+import './global.css';
 
 const emptyForm = {
-  accountName: "",
-  platform: "X (Twitter)",
-  url: "",
+  incident: "",
+  username: "",
   dateReported: "",
   status: "Active",
-  officer: "",
 };
 
-export default function XVerifications() {
+export default function IncidentTelegram() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
@@ -20,16 +18,9 @@ export default function XVerifications() {
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // 1. Temporary State (What the user selects in the inputs)
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-
-  // 2. Active State (What is actually applied to the table)
-  const [appliedFilters, setAppliedFilters] = useState({
-    date: "",
-    status: ""
-  });
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
 
   // Calculate Stats
   const activeCount = rows.filter(r => r.status === "Active").length;
@@ -74,8 +65,6 @@ export default function XVerifications() {
   };
 
   // --- Filter Logic ---
-  
-  // Triggered when "Apply Filters" is clicked
   const handleApplyFilters = () => {
     setAppliedFilters({
       date: tempFilterDate,
@@ -83,19 +72,18 @@ export default function XVerifications() {
     });
   };
 
-  // Combined Filter: Search + Date + Status
   const filteredRows = rows.filter(row => {
-    // 1. Search Check
+    // 1. Search Check (Incident or Username)
     const matchesSearch = 
-      row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.url.toLowerCase().includes(searchTerm.toLowerCase());
+      row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.username.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // 2. Date Check (If filter is set, match exact date)
+    // 2. Date Check
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
       : true;
 
-    // 3. Status Check (If filter is set, match status)
+    // 3. Status Check
     const matchesStatus = appliedFilters.status 
       ? row.status === appliedFilters.status 
       : true;
@@ -109,13 +97,14 @@ export default function XVerifications() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
+            {/* Telegram Logo SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/>
+              <path d="M21.68 3.32a2.3 2.3 0 0 0-2.35-.38l-17 6.6a2.3 2.3 0 0 0 .1 4.28l4.9 1.52 1.9 5.7a1.2 1.2 0 0 0 2.2 0l2.3-4.1 6.3 4.6a2.3 2.3 0 0 0 3.7-1.7V4.3a2.3 2.3 0 0 0-.35-1zM6.9 14.6l12.1-8.1-10 9.7z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>X Verifications</h1>
+          <h1>Telegram Incidents</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
@@ -138,18 +127,17 @@ export default function XVerifications() {
 
       {/* 3. Actions Section */}
       <div className="action-bar">
-        {/* Left: Filters (Updated to match Form) */}
+        {/* Left: Filters */}
         <div className="left-actions">
-          
-          {/* Date Picker Filter */}
-          <input 
+           {/* Date Filter */}
+           <input 
             type="date" 
             className="filter-input" 
             value={tempFilterDate}
             onChange={(e) => setTempFilterDate(e.target.value)}
           />
 
-          {/* Status Dropdown Filter */}
+          {/* Status Filter */}
           <select 
             className="filter-input"
             value={tempFilterStatus}
@@ -160,17 +148,15 @@ export default function XVerifications() {
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
-
-          <button className="btn-primary" onClick={handleApplyFilters}>
-            Apply Filters
-          </button>
+          
+          <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
 
         {/* Middle: Search */}
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Account or URL" 
+              placeholder="Search Incident or Username" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -188,26 +174,23 @@ export default function XVerifications() {
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-xv-no">No.</div>
-          <div className="th-cell col-xv-name">Account Name</div>
-          <div className="th-cell col-xv-platform">Platform</div>
-          <div className="th-cell col-xv-url">URL</div>
-          <div className="th-cell col-xv-date">Date Reported</div>
-          <div className="th-cell col-xv-status">Status</div>
-          <div className="th-cell col-xv-officer">Officer</div>
-          <div className="th-cell col-xv-action">Action</div>
+          <div className="th-cell col-tg-no">No.</div>
+          <div className="th-cell col-tg-incident">Incident</div>
+          <div className="th-cell col-tg-username">Username</div>
+          <div className="th-cell col-tg-date">Date Reported</div>
+          <div className="th-cell col-tg-status">Status</div>
+          <div className="th-cell col-tg-action">Action</div>
         </div>
 
         {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-xv-no">{i + 1}</div>
-              <div className="td-cell col-xv-name">{row.accountName}</div>
-              <div className="td-cell col-xv-platform">{row.platform}</div>
-              <div className="td-cell col-xv-url">{row.url}</div>
-              <div className="td-cell col-xv-date">{row.dateReported}</div>
-              <div className="td-cell col-xv-status">
+              <div className="td-cell col-tg-no">{i + 1}</div>
+              <div className="td-cell col-tg-incident">{row.incident}</div>
+              <div className="td-cell col-tg-username">{row.username}</div>
+              <div className="td-cell col-tg-date">{row.dateReported}</div>
+              <div className="td-cell col-tg-status">
                 <span className={`status-badge ${
                     row.status === "Active" ? "status-active" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
@@ -215,9 +198,8 @@ export default function XVerifications() {
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-xv-officer">{row.officer}</div>
               
-              <div className="td-cell col-xv-action relative">
+              <div className="td-cell col-tg-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
                     <Edit2 size={16} />
@@ -250,33 +232,24 @@ export default function XVerifications() {
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Create Record"}</h2>
+            <h2 className="modal-title">{editingIndex !== null ? "Edit Incident" : "Add New Incident"}</h2>
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Account Name</label>
+                <label>Incident</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.accountName} 
-                  onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} 
+                  value={formData.incident} 
+                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
                 />
               </div>
 
               <div className="form-group">
-                <label>Platform</label>
+                <label>Username</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.platform} 
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>URL</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.url} 
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
+                  value={formData.username} 
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
                 />
               </div>
 
@@ -286,15 +259,6 @@ export default function XVerifications() {
                   type="date" 
                   value={formData.dateReported} 
                   onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Officer Responsible</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.officer} 
-                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
                 />
               </div>
 
