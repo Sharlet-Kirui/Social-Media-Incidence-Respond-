@@ -1,9 +1,5 @@
 import { useState } from "react";
 import { Plus, Search, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-<<<<<<< HEAD
-=======
-
->>>>>>> 51097f7c784b87fe92dc4a35964caba1b8c83560
 
 const emptyForm = {
   accountNo: "",
