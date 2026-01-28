@@ -1,5 +1,5 @@
 # React + Vite
-# 🚀 Beginner-Friendly Guide: Cloning & Running a React Project
+# Cloning & Running a React Project
 
 ![React](https://img.shields.io/badge/React-18.x-blue)
 ![Node](https://img.shields.io/badge/Node.js-Required-green)

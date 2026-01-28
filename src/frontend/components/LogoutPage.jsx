@@ -1,13 +1,13 @@
-import React from 'react'
+// import React from 'react'
 
-const LogoutPage = () => {
+// const LogoutPage = () => {
 
     
-  return (
-    <div>
+//   return (
+//     <div>
       
-    </div>
-  )
-}
+//     </div>
+//   )
+// }
 
-export default LogoutPage
+// export default LogoutPage
