@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom"; // Using NavLink for active styling
-import "./Navbar.css";
+import "./NavBar.css";
 import { User, Settings, LogOut } from "lucide-react";
 
 // import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
 const Navbar = () => {
   return (
-    <nav className="navbar">
+    <nav className="navbar"> f
       {/* Brand / Logo */}
       <div className="navbar-logo">MyApp</div>
 
