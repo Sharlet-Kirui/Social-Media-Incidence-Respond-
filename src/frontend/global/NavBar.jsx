@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom"; // Using NavLink for active styling
 import "./NavBar.css";
-import { User, Settings, LogOut } from "lucide-react";
+import { User, Settings, LogOut, LockKeyhole } from "lucide-react";
 
 // import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
@@ -126,6 +126,16 @@ const Navbar = () => {
               >
                 <LogOut size={16} style={{ marginRight: "6px" }} />
                 Logout
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/SignIn"
+                className="dropdown-link"
+                style={{ display: "flex", alignItems: "center" }}
+              >
+              <LockKeyhole size={16} style={{ marginRight: "6px" }} />
+                Login
               </NavLink>
             </li>
           </ul>

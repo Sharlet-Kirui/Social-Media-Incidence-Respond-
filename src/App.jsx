@@ -18,6 +18,9 @@ import IncidentX from './frontend/components/IncidentX';
 import IncidentTelegram from './frontend/components/IncidentTelegram';
 import IncidentTikTok from './frontend/components/IncidentTikTok';
 import IncidentMeta from './frontend/components/IncidentMeta';
+import SignIn from './frontend/components/SignIn';
+import SignUp from './frontend/components/SIgnUp';
+
 
 
 function App() {
@@ -49,6 +52,8 @@ function App() {
 
           <Route path="/governmentOfficials" element={<Officials/>} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
       </div>
     </Router>
