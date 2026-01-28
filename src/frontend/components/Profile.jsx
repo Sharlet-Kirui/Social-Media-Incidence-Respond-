@@ -39,7 +39,7 @@ export default function Profile() {
           <p><strong>MEMBER SINCE:</strong> {user.memberSince}</p>
 
           <button className="w-full bg-gray-800 text-white py-2 rounded">
-            ORDERS
+            Your Profile Details
           </button>
         </div>
 
