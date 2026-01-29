@@ -6,10 +6,13 @@ const emptyForm = {
   accountNo: "",
   accountName: "",
   platform: "",
-  url: "",
+  compromisedAccount: "",
   dateReported: "",
-  status: "Active",
-  officer: "",
+  incident: "Active",
+  status: "",
+  officerResponsible: "",
+  referenceNumber: "",
+  
 };
 
 export default function CompromisedAccounts() {
@@ -176,11 +179,12 @@ export default function CompromisedAccounts() {
           <div className="th-cell col-ca-no">No.</div>
           <div className="th-cell col-ca-name">Account Name</div>
           <div className="th-cell col-ca-platform">Platform</div>
-          <div className="th-cell col-ca-url">URL</div>
+          <div className="th-cell col-ca-name">Compromised Account</div>
           <div className="th-cell col-ca-date">Date Reported</div>
-          <div className="th-cell col-ca-status">Status</div>
-          <div className="th-cell col-ca-officer">Officer</div>
-          <div className="th-cell col-ca-action">Action</div>
+          <div className="th-cell col-ca-status">Incident</div>
+          <div className="th-cell col-ca-officer">Status</div>
+          <div className="th-cell col-ca-name">Officer Responsible</div>
+          <div className="th-cell col-ca-name">Reference Number</div>
         </div>
 
         {/* Table Body */}
@@ -257,7 +261,7 @@ export default function CompromisedAccounts() {
               </div>
 
               <div className="form-group">
-                <label>URL</label>
+                <label>Compromised Accounts</label>
                 <input 
                   placeholder="Value" 
                   value={formData.url} 
@@ -275,7 +279,7 @@ export default function CompromisedAccounts() {
               </div>
 
               <div className="form-group">
-                <label>Officer Responsible</label>
+                <label>Incident</label>
                 <input 
                   placeholder="Value" 
                   value={formData.officer} 
@@ -293,6 +297,24 @@ export default function CompromisedAccounts() {
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>
+              </div>
+
+              <div className="form-group">
+                <label>Officer Responsible</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.officer} 
+                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Reference Number</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.officer} 
+                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
+                />
               </div>
 
               <div className="modal-actions">
