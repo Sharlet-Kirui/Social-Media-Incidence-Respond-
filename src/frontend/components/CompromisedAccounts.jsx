@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import './global.css';
 
@@ -8,7 +8,7 @@ const emptyForm = {
   platform: "",
   compromisedAccount: "",
   dateReported: "",
-  incident: "Active",
+  incident: "",
   status: "",
   officerResponsible: "",
   referenceNumber: "",
@@ -16,11 +16,23 @@ const emptyForm = {
 };
 
 export default function CompromisedAccounts() {
+
+  const COMPROMISED_ACCOUNTS_URL = "http://localhost:4000/compromised_accounts"
+
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+
+   useEffect(() => {
+      fetch(COMPROMISED_ACCOUNTS_URL  )
+        .then((response) => response.json())
+        .then((compromised_accounts) => setRows(compromised_accounts))
+        .catch((error) => {
+          console.log(error);
+        });
+      }, []);
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,6 +65,18 @@ export default function CompromisedAccounts() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(COMPROMISED_ACCOUNTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -179,7 +203,7 @@ export default function CompromisedAccounts() {
           <div className="th-cell col-ca-no">No.</div>
           <div className="th-cell col-ca-name">Account Name</div>
           <div className="th-cell col-ca-platform">Platform</div>
-          <div className="th-cell col-ca-name">Compromised Account</div>
+          <div className="th-cell col-ca-date">Compromised Account</div>
           <div className="th-cell col-ca-date">Date Reported</div>
           <div className="th-cell col-ca-status">Incident</div>
           <div className="th-cell col-ca-officer">Status</div>
@@ -194,8 +218,9 @@ export default function CompromisedAccounts() {
               <div className="td-cell col-ca-no">{i + 1}</div>
               <div className="td-cell col-ca-name">{row.accountName}</div>
               <div className="td-cell col-ca-platform">{row.platform}</div>
-              <div className="td-cell col-ca-url">{row.url}</div>
-              <div className="td-cell col-ca-date">{row.dateReported}</div>
+              <div className="td-cell col-ca-date">{row.compromisedAccount}</div>
+              <div className="td-cell col-ca-url">{row.dateReported}</div>
+              <div className="td-cell col-ca-name">{row.incident}</div>
               <div className="td-cell col-ca-status">
                 <span className={`status-badge ${
                     row.status === "Active" ? "status-active" : 
@@ -205,6 +230,7 @@ export default function CompromisedAccounts() {
                 </span>
               </div>
               <div className="td-cell col-ca-officer">{row.officer}</div>
+              <div className="td-cell col-ca-url">{row.referenceNumber}</div>
               
               <div className="td-cell col-ca-action relative">
                 <div className="action-btn-group">
@@ -264,7 +290,7 @@ export default function CompromisedAccounts() {
                 <label>Compromised Accounts</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.url} 
+                  value={formData.compromisedAccount} 
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
                 />
               </div>
@@ -282,8 +308,8 @@ export default function CompromisedAccounts() {
                 <label>Incident</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.officer} 
-                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
+                  value={formData.incident} 
+                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
                 />
               </div>
 
@@ -312,8 +338,8 @@ export default function CompromisedAccounts() {
                 <label>Reference Number</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.officer} 
-                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
+                  value={formData.referenceNumber} 
+                  onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })} 
                 />
               </div>
 

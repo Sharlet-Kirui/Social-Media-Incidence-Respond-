@@ -13,6 +13,8 @@ const emptyForm = {
 
 export default function Officials() {
 
+  const GVT_OFFICIALS_URL = "http://localhost:4000/gvt_officials"
+
 
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +34,7 @@ export default function Officials() {
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
     useEffect(() => {
-    fetch("http://localhost:4000/gvt_officials")
+    fetch(GVT_OFFICIALS_URL)
       .then((response) => response.json())
       .then((officials) => setRows(officials))
       .catch((error) => {
@@ -61,7 +63,7 @@ export default function Officials() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
-      fetch("http://localhost:4000/gvt_officials", {
+      fetch(GVT_OFFICIALS_URL, {
       method: "POST",
       headers: {
         "Content-Type": "Application/JSON",
