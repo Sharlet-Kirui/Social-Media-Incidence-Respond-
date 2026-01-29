@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css'; // Ensure this points to your global.css
 
@@ -12,6 +12,8 @@ const emptyForm = {
 };
 
 export default function Officials() {
+
+
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
@@ -28,6 +30,15 @@ export default function Officials() {
   const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+
+    useEffect(() => {
+    fetch("http://localhost:4000/gvt_officials")
+      .then((response) => response.json())
+      .then((officials) => setRows(officials))
+      .catch((error) => {
+        console.log(error);
+      });
+    }, []);
 
   // --- Handlers ---
 
@@ -50,6 +61,17 @@ export default function Officials() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch("http://localhost:4000/gvt_officials", {
+      method: "POST",
+      headers: {
+        "Content-Type": "Application/JSON",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
