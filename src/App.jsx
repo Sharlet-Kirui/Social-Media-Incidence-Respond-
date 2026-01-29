@@ -20,6 +20,7 @@ import IncidentTikTok from './frontend/components/IncidentTikTok';
 import IncidentMeta from './frontend/components/IncidentMeta';
 import SignIn from './frontend/components/SignIn';
 import SignUp from './frontend/components/SIgnUp';
+import LatestResponded from './frontend/components/LatestResponded';
 
 
 
@@ -48,7 +49,7 @@ function App() {
           <Route path="/verification/meta" element={<Metaverifications/>} />
           <Route path="/verification/X" element={<Verifications/>} />
           <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
-          <Route path="/latestResponded" element={<h1>Latest Responded</h1>} />
+          <Route path="/latestResponded" element={<LatestResponded/>} />
 
           <Route path="/governmentOfficials" element={<Officials/>} />
           <Route path="/profile" element={<Profile />} />
