@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import './global.css';
+import '../global.css';
 
 const emptyForm = {
-  incident: "",
+  accountName: "",
+  platform: "X (Twitter)",
   url: "",
   dateReported: "",
+  incident:"",
   status: "Active",
   officer: "",
 };
 
-export default function IncidentTikTok() {
+export default function IncidentX() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
@@ -25,6 +31,18 @@ export default function IncidentTikTok() {
   const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+
+  const X_INCIDENTS_URL = "http://localhost:4000/x-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/x-incidents/upload-file"
+
+  useEffect(() => {
+    fetch(X_INCIDENTS_URL)
+    .then((response) => response.json())
+    .then((incidents) => setRows(incidents))
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
 
   const openCreate = () => {
     setFormData(emptyForm);
@@ -45,6 +63,18 @@ export default function IncidentTikTok() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(X_INCIDENTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -65,9 +95,35 @@ export default function IncidentTikTok() {
     setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus });
   };
 
+  const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+
+    
+  }
+
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
-      row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       row.url.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = appliedFilters.date ? row.dateReported === appliedFilters.date : true;
     const matchesStatus = appliedFilters.status ? row.status === appliedFilters.status : true;
@@ -81,12 +137,12 @@ export default function IncidentTikTok() {
         <div className="icon-wrapper">
           <div className="chat-icon">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 1 0 1 13.6 6.84 6.84 0 0 0 6.82-6.85V7.97a10.32 10.32 0 0 0 5.25 1.5V6.05a6.47 6.47 0 0 1-3.84-.86z" fill="white"/>
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>TikTok Incidents</h1>
+          <h1>X (Twitter) Incidents</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
@@ -116,39 +172,71 @@ export default function IncidentTikTok() {
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
         <div className="center-actions">
-           <input type="text" placeholder="Search Incident or URL" className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+           <input type="text" placeholder="Search Account or URL" className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
         <div className="right-actions">
           <button className="btn-primary" onClick={openCreate}><Plus size={18} /> Add New</button>
+        </div>
+        <div className="right-actions">
+          <form>
+            {displayFileForm &&
+              <>
+               <label htmlFor="x-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="x-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("x-incidents-file").value !== ""){
+                  setFilePath(event.target.files[0])
+                  setFileChosen(true)
+                  setDisplayFileForm(false)
+                }
+              }
+              }/>
+              </>
+            }
+            
+            
+            {fileChosen &&
+              <>
+              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                setFileChosen(false)
+                setDisplayFileForm(true)
+              }}/>
+              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+              </>
+            }
+          </form>
         </div>
       </div>
 
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-tiktok-no">No.</div>
-          <div className="th-cell col-tiktok-incident">Incident</div>
-          <div className="th-cell col-tiktok-url">URL</div>
-          <div className="th-cell col-tiktok-date">Date Reported</div>
-          <div className="th-cell col-tiktok-status">Status</div>
-          <div className="th-cell col-tiktok-officer">Officer</div>
-          <div className="th-cell col-tiktok-action">Action</div>
+          <div className="th-cell col-ix-no">No.</div>
+          <div className="th-cell col-ix-name">Account Name</div>
+          <div className="th-cell col-ix-platform">Platform</div>
+          <div className="th-cell col-ix-url">URL</div>
+          <div className="th-cell col-ix-date">Date Reported</div>
+          <div className="th-cell col-ix-platform">Incident</div>
+          <div className="th-cell col-ix-status">Status</div>
+          <div className="th-cell col-ix-officer">Officer</div>
+          <div className="th-cell col-ix-action">Action</div>
         </div>
 
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-tiktok-no">{i + 1}</div>
-              <div className="td-cell col-tiktok-incident">{row.incident}</div>
-              <div className="td-cell col-tiktok-url">{row.url}</div>
-              <div className="td-cell col-tiktok-date">{row.dateReported}</div>
-              <div className="td-cell col-tiktok-status">
+              <div className="td-cell col-ix-no">{i + 1}</div>
+              <div className="td-cell col-ix-name">{row.accountName}</div>
+              <div className="td-cell col-ix-platform">{row.platform}</div>
+              <div className="td-cell col-ix-url">{row.url}</div>
+              <div className="td-cell col-ix-date">{row.dateReported}</div>
+              <div className="th-cell col-ix-platform">{row.incident}</div>
+              <div className="td-cell col-ix-status">
                 <span className={`status-badge ${row.status === "Active" ? "status-active" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-tiktok-officer">{row.officer}</div>
-              <div className="td-cell col-tiktok-action relative">
+              <div className="td-cell col-ix-officer">{row.officer}</div>
+              <div className="td-cell col-ix-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn"><Edit2 size={16} /></button>
                   <button onClick={() => setMenuIndex(menuIndex === i ? null : i)} className="icon-btn"><MoreHorizontal size={16} /></button>
@@ -174,8 +262,12 @@ export default function IncidentTikTok() {
             <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Add New Incident"}</h2>
             <div className="modal-form">
               <div className="form-group">
-                <label>Incident</label>
-                <input placeholder="Value" value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })} />
+                <label>Account Name</label>
+                <input placeholder="Value" value={formData.accountName} onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Platform</label>
+                <input placeholder="Value" value={formData.platform} onChange={(e) => setFormData({ ...formData, platform: e.target.value })} />
               </div>
               <div className="form-group">
                 <label>URL</label>
@@ -188,6 +280,23 @@ export default function IncidentTikTok() {
               <div className="form-group">
                 <label>Officer Responsible</label>
                 <input placeholder="Value" value={formData.officer} onChange={(e) => setFormData({ ...formData, officer: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>Status</label>

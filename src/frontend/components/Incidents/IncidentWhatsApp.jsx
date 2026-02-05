@@ -1,23 +1,18 @@
-import React, { useState,useEffect } from "react";
-import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import '../global.css'; // Ensure this points to your global.css
+import React, { useState } from 'react';
+import { Plus, Edit2, MoreHorizontal, Trash } from "lucide-react";
+import '../global.css';
 
 const emptyForm = {
-  accountName: "",
-  platform: "",
-  url: "",
+  mobileNumber: "",
   dateReported: "",
   status: "Active",
   officer: "",
 };
 
-export default function Officials() {
-
-  const GVT_OFFICIALS_URL = "http://localhost:4000/gvt_officials"
-
-
+const IncidentWhatsApp = () => {
+  // State Management
   const [rows, setRows] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
@@ -33,27 +28,17 @@ export default function Officials() {
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
-    useEffect(() => {
-    fetch(GVT_OFFICIALS_URL)
-      .then((response) => response.json())
-      .then((officials) => setRows(officials))
-      .catch((error) => {
-        console.log(error);
-      });
-    }, []);
-
   // --- Handlers ---
-
   const openCreate = () => {
     setFormData(emptyForm);
     setEditingIndex(null);
-    setIsOpen(true);
+    setIsModalOpen(true);
   };
 
   const openEdit = (index) => {
     setFormData(rows[index]);
     setEditingIndex(index);
-    setIsOpen(true);
+    setIsModalOpen(true);
     setMenuIndex(null);
   };
 
@@ -63,30 +48,14 @@ export default function Officials() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
-      fetch(GVT_OFFICIALS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "Application/JSON",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.log(error);
-      });
       setRows([...rows, formData]);
     }
-    setIsOpen(false);
+    setIsModalOpen(false);
     setFormData(emptyForm);
   };
 
   const handleDelete = (index) => {
     setRows(rows.filter((_, i) => i !== index));
-    setMenuIndex(null);
-  };
-
-  const handleDuplicate = (index) => {
-    setRows([...rows, { ...rows[index] }]);
     setMenuIndex(null);
   };
 
@@ -99,9 +68,7 @@ export default function Officials() {
   };
 
   const filteredRows = rows.filter(row => {
-    const matchesSearch = 
-      row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.platform.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = row.mobileNumber.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
@@ -120,15 +87,14 @@ export default function Officials() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
-            {/* Government / Officials Icon SVG */}
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" fill="white"/>
+            <svg width="35" height="35" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>Government Officials</h1>
-          <p>{rows.length} records found</p>
+          <h1>WhatsApp Incidents</h1>
+          <p>{rows.length} incidents found</p>
         </div>
       </div>
 
@@ -152,12 +118,15 @@ export default function Officials() {
       <div className="action-bar">
         {/* Left: Filters */}
         <div className="left-actions">
+           {/* Date Filter */}
            <input 
             type="date" 
             className="filter-input" 
             value={tempFilterDate}
             onChange={(e) => setTempFilterDate(e.target.value)}
           />
+
+          {/* Status Filter */}
           <select 
             className="filter-input"
             value={tempFilterStatus}
@@ -168,24 +137,25 @@ export default function Officials() {
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
+
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
-
+        
         {/* Middle: Search */}
         <div className="center-actions">
-           <input 
-              type="text" 
-              placeholder="Search Name or Platform" 
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-           />
+          <input 
+            type="text" 
+            placeholder="Search Mobile Number" 
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
         {/* Right: Add Button */}
         <div className="right-actions">
           <button className="btn-primary" onClick={openCreate}>
-            <Plus size={18} /> Add New
+            <Plus size={18} /> Add New Incident
           </button>
         </div>
       </div>
@@ -193,26 +163,22 @@ export default function Officials() {
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-ca-no">No.</div>
-          <div className="th-cell col-ca-name">Account Name</div>
-          <div className="th-cell col-ca-platform">Platform</div>
-          <div className="th-cell col-ca-url">URL</div>
-          <div className="th-cell col-ca-date">Date Reported</div>
-          <div className="th-cell col-ca-status">Status</div>
-          <div className="th-cell col-ca-officer">Officer</div>
-          <div className="th-cell col-ca-action">Action</div>
+          <div className="th-cell col-wa-no">No</div>
+          <div className="th-cell col-wa-mobile">Mobile Number</div>
+          <div className="th-cell col-wa-date">Date Reported</div>
+          <div className="th-cell col-wa-status">Status</div>
+          <div className="th-cell col-wa-officer">Officer</div>
+          <div className="th-cell col-wa-action">Action</div>
         </div>
-
+        
         {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-ca-no">{i + 1}</div>
-              <div className="td-cell col-ca-name">{row.accountName}</div>
-              <div className="td-cell col-ca-platform">{row.platform}</div>
-              <div className="td-cell col-ca-url">{row.url}</div>
-              <div className="td-cell col-ca-date">{row.dateReported}</div>
-              <div className="td-cell col-ca-status">
+              <div className="td-cell col-wa-no">{i + 1}</div>
+              <div className="td-cell col-wa-mobile">{row.mobileNumber}</div>
+              <div className="td-cell col-wa-date">{row.dateReported}</div>
+              <div className="td-cell col-wa-status">
                 <span className={`status-badge ${
                     row.status === "Active" ? "status-active" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
@@ -220,9 +186,9 @@ export default function Officials() {
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-ca-officer">{row.officer}</div>
+              <div className="td-cell col-wa-officer">{row.officer}</div>
               
-              <div className="td-cell col-ca-action relative">
+              <div className="td-cell col-wa-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
                     <Edit2 size={16} />
@@ -235,9 +201,6 @@ export default function Officials() {
                 {/* Dropdown Menu */}
                 {menuIndex === i && (
                   <div className="dropdown-menu">
-                    <button onClick={() => handleDuplicate(i)} className="dropdown-item">
-                      <Copy size={14} /> Duplicate
-                    </button>
                     <button onClick={() => handleDelete(i)} className="dropdown-item danger">
                       <Trash size={14} /> Delete
                     </button>
@@ -247,41 +210,26 @@ export default function Officials() {
             </div>
           ))
         ) : (
-          <div className="table-body-empty">No records found</div>
+          <div className="table-body-empty">No incidents found.</div>
         )}
       </div>
 
-      {/* --- POP-UP MODAL --- */}
-      {isOpen && (
-        <div className="modal-overlay" onClick={() => setIsOpen(false)}>
+      {/* --- POP-UP MODAL START --- */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Create Record"}</h2>
+            <h2 className="modal-title">
+              {editingIndex !== null ? "Edit Incident" : "Add New Incident"}
+            </h2>
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Account Name</label>
+                <label>Mobile Number</label>
                 <input 
+                  type="text" 
                   placeholder="Value" 
-                  value={formData.accountName} 
-                  onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Platform</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.platform} 
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>URL</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.url} 
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
+                  value={formData.mobileNumber}
+                  onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
                 />
               </div>
 
@@ -289,24 +237,15 @@ export default function Officials() {
                 <label>Date Reported</label>
                 <input 
                   type="date" 
-                  value={formData.dateReported} 
-                  onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Officer Responsible</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.officer} 
-                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
+                  value={formData.dateReported}
+                  onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Status</label>
                 <select 
-                  value={formData.status} 
+                  value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                 >
                   <option value="Active">Active</option>
@@ -315,14 +254,27 @@ export default function Officials() {
                 </select>
               </div>
 
+              <div className="form-group">
+                <label>Officer</label>
+                <input 
+                  type="text" 
+                  placeholder="Value" 
+                  value={formData.officer}
+                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })}
+                />
+              </div>
+
               <div className="modal-actions">
-                <button onClick={() => setIsOpen(false)} className="btn-cancel">Cancel</button>
-                <button onClick={handleSubmit} className="btn-add">Save</button>
+                 <button className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                 <button className="btn-add" onClick={handleSubmit}>Save</button>
               </div>
             </div>
           </div>
         </div>
       )}
+      {/* --- POP-UP MODAL END --- */}
     </div>
   );
-}
+};
+
+export default IncidentWhatsApp;

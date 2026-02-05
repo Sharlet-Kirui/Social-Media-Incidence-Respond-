@@ -3,8 +3,6 @@ import { NavLink } from "react-router-dom"; // Using NavLink for active styling
 import "./NavBar.css";
 import { User, Settings, LogOut, LockKeyhole } from "lucide-react";
 
-// import CompromisedAccounts from './frontend/components/CompromisedAccounts';
-
 const Navbar = () => {
   return (
     <nav className="navbar"> 
@@ -89,17 +87,6 @@ const Navbar = () => {
           </ul>
         </li>
 
-        <li className="nav-item">
-          <NavLink to="/CompromisedAccounts" className="nav-link">
-            Compromised Accounts
-          </NavLink>
-        </li>
-
-        <li className="nav-item">
-          <NavLink to="/governmentOfficials" className="nav-link">
-            Government Officials
-          </NavLink>
-        </li>
         <li className="nav-item">
           <NavLink to="/Profile" className="nav-link">
             <User size={18} style={{ marginRight: "6px" }} />

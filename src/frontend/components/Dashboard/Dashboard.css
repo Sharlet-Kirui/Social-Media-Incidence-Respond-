@@ -1,0 +1,381 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+.dashboard-container {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- Shared Card Styles --- */
+.dash-card {
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* --- Top Stats --- */
+.stats-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.top-card {
+  flex: 1;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 220px; /* Slightly smaller card width */
+  height: 100px; /* Slightly smaller card height */
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.top-card h3 {
+  font-family: 'Poppins';
+  font-weight: 400;
+  font-size: 16px;
+  color: #000000;
+  margin: 0 0 5px 0;
+}
+
+.card-value {
+  font-family: 'Poppins';
+  font-weight: 700;
+  font-size: 24px;
+  color: #000000;
+}
+
+/* --- Charts Layout --- */
+.charts-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.chart-container {
+  flex: 1;
+  min-width: 400px;
+  /* Reduced height as requested */
+  height: 350px; 
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.chart-header h3 {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0;
+}
+
+.big-number {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Year Tabs */
+.year-tabs {
+  display: flex;
+  gap: 4px;
+  background: #F3F4F6;
+  padding: 3px;
+  border-radius: 6px;
+}
+
+.tab {
+  padding: 3px 8px;
+  font-size: 11px;
+  color: #6D7280;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.tab.active {
+  background: #FFFFFF;
+  color: #000000;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* --- Line Graph Visuals --- */
+.line-graph-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.grid-line {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #9CA3AF;
+  height: 20%; /* Distribute vertically */
+}
+
+.grid-line span {
+  font-size: 10px;
+  width: 25px;
+  margin-right: 5px;
+  text-align: right;
+}
+
+.grid-line hr {
+  flex: 1;
+  border: none;
+  border-top: 1px dashed #E5E7EB;
+}
+
+.trend-line-svg {
+  position: absolute;
+  top: 10px; 
+  left: 30px; /* Offset for Y-axis labels */
+  width: calc(100% - 30px);
+  height: calc(100% - 30px); /* Leave room for X-axis */
+  overflow: visible;
+}
+
+.x-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 30px;
+  margin-top: 5px;
+}
+
+.x-axis-labels span {
+  font-size: 10px;
+  color: #6D7280;
+}
+
+/* --- Bar Chart Visuals --- */
+.bar-chart-area {
+  display: flex;
+  height: 100%;
+  gap: 10px;
+  padding-bottom: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.y-axis-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 20px; /* Align with bottom of bars */
+  font-size: 10px;
+  color: #6D7280;
+  text-align: right;
+  min-width: 25px;
+}
+
+.bars-region {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar-grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bar-grid-lines hr {
+  border: none;
+  border-top: 1px dashed #E5E7EB;
+  margin: 0;
+}
+
+.bars-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+.bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  height: 100%; /* Fill container */
+  justify-content: flex-end;
+}
+
+.bar-track {
+  width: 40px;
+  height: 100%; 
+  display: flex;
+  align-items: flex-end; /* Align bar to bottom */
+}
+
+.bar-fill {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+  position: relative;
+}
+
+.bar-tooltip {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #000;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.bar-group:hover .bar-tooltip {
+  opacity: 1;
+}
+
+.x-axis-label {
+  font-size: 12px;
+  color: #000;
+  font-weight: 500;
+}
+
+/* --- Pie Chart Modal --- */
+.pie-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(2px);
+  padding: 20px;
+}
+
+.pie-card {
+  width: 90%; 
+  max-width: 400px; /* Kept concise for the legend look */
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  animation: popIn 0.3s ease;
+}
+
+.pie-header {
+  margin-bottom: 20px;
+}
+
+.pie-header h3 {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: #000;
+}
+
+.pie-sub-header {
+  font-family: 'Inter', sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #000;
+  margin-top: 5px;
+}
+
+/* Chart Area */
+.pie-chart-wrapper {
+  width: 180px; /* Fixed visually pleasing size */
+  height: 180px;
+  margin: 0 auto 30px auto; /* Center horizontally, margin bottom for legend */
+}
+
+.pie-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Legend Section */
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+}
+
+.legend-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-name {
+  color: #4B5563; /* Gray-600 */
+  font-weight: 500;
+}
+
+.legend-percent {
+  color: #000000;
+  font-weight: 600; /* Slightly bolder for emphasis */
+}
+
+/* Animations */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    min-width: 100%;
+  }
+}

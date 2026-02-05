@@ -1,38 +1,20 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import './global.css';
+import '../global.css';
 
 const emptyForm = {
-  accountNo: "",
-  accountName: "",
-  platform: "",
-  compromisedAccount: "",
-  dateReported: "",
   incident: "",
-  status: "",
-  officerResponsible: "",
-  referenceNumber: "",
-  
+  username: "",
+  dateReported: "",
+  status: "Active",
 };
 
-export default function CompromisedAccounts() {
-
-  const COMPROMISED_ACCOUNTS_URL = "http://localhost:4000/compromised_accounts"
-
+export default function IncidentTelegram() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
-
-   useEffect(() => {
-      fetch(COMPROMISED_ACCOUNTS_URL  )
-        .then((response) => response.json())
-        .then((compromised_accounts) => setRows(compromised_accounts))
-        .catch((error) => {
-          console.log(error);
-        });
-      }, []);
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +28,7 @@ export default function CompromisedAccounts() {
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
   // --- Handlers ---
+
   const openCreate = () => {
     setFormData(emptyForm);
     setEditingIndex(null);
@@ -65,18 +48,6 @@ export default function CompromisedAccounts() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
-      fetch(COMPROMISED_ACCOUNTS_URL
-        , {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/JSON",
-        },
-        body: JSON.stringify(formData),
-      })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.log(error);
-      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -102,14 +73,17 @@ export default function CompromisedAccounts() {
   };
 
   const filteredRows = rows.filter(row => {
+    // 1. Search Check (Incident or Username)
     const matchesSearch = 
-      row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.platform.toLowerCase().includes(searchTerm.toLowerCase());
-      
+      row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.username.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // 2. Date Check
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
       : true;
 
+    // 3. Status Check
     const matchesStatus = appliedFilters.status 
       ? row.status === appliedFilters.status 
       : true;
@@ -123,14 +97,14 @@ export default function CompromisedAccounts() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
+            {/* Telegram Logo SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L3 7V13C3 18.52 6.84 23.74 12 25C17.16 23.74 21 18.52 21 13V7L12 2ZM12 13H17V17H12V13Z" fill="white"/>
-              <path d="M12 2L3 7V13C3 18.52 6.84 23.74 12 25C17.16 23.74 21 18.52 21 13V7L12 2ZM11 7H13V13H11V7ZM11 15H13V17H11V15Z" fill="white"/>
+              <path d="M21.68 3.32a2.3 2.3 0 0 0-2.35-.38l-17 6.6a2.3 2.3 0 0 0 .1 4.28l4.9 1.52 1.9 5.7a1.2 1.2 0 0 0 2.2 0l2.3-4.1 6.3 4.6a2.3 2.3 0 0 0 3.7-1.7V4.3a2.3 2.3 0 0 0-.35-1zM6.9 14.6l12.1-8.1-10 9.7z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>Compromised Accounts</h1>
+          <h1>Telegram Incidents</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
@@ -182,7 +156,7 @@ export default function CompromisedAccounts() {
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Account or Platform" 
+              placeholder="Search Incident or Username" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -200,28 +174,23 @@ export default function CompromisedAccounts() {
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-ca-no">No.</div>
-          <div className="th-cell col-ca-name">Account Name</div>
-          <div className="th-cell col-ca-platform">Platform</div>
-          <div className="th-cell col-ca-date">Compromised Account</div>
-          <div className="th-cell col-ca-date">Date Reported</div>
-          <div className="th-cell col-ca-status">Incident</div>
-          <div className="th-cell col-ca-officer">Status</div>
-          <div className="th-cell col-ca-name">Officer Responsible</div>
-          <div className="th-cell col-ca-name">Reference Number</div>
+          <div className="th-cell col-tg-no">No.</div>
+          <div className="th-cell col-tg-incident">Incident</div>
+          <div className="th-cell col-tg-username">Username</div>
+          <div className="th-cell col-tg-date">Date Reported</div>
+          <div className="th-cell col-tg-status">Status</div>
+          <div className="th-cell col-tg-action">Action</div>
         </div>
 
         {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-ca-no">{i + 1}</div>
-              <div className="td-cell col-ca-name">{row.accountName}</div>
-              <div className="td-cell col-ca-platform">{row.platform}</div>
-              <div className="td-cell col-ca-date">{row.compromisedAccount}</div>
-              <div className="td-cell col-ca-url">{row.dateReported}</div>
-              <div className="td-cell col-ca-name">{row.incident}</div>
-              <div className="td-cell col-ca-status">
+              <div className="td-cell col-tg-no">{i + 1}</div>
+              <div className="td-cell col-tg-incident">{row.incident}</div>
+              <div className="td-cell col-tg-username">{row.username}</div>
+              <div className="td-cell col-tg-date">{row.dateReported}</div>
+              <div className="td-cell col-tg-status">
                 <span className={`status-badge ${
                     row.status === "Active" ? "status-active" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
@@ -229,10 +198,8 @@ export default function CompromisedAccounts() {
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-ca-officer">{row.officer}</div>
-              <div className="td-cell col-ca-url">{row.referenceNumber}</div>
               
-              <div className="td-cell col-ca-action relative">
+              <div className="td-cell col-tg-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
                     <Edit2 size={16} />
@@ -265,33 +232,24 @@ export default function CompromisedAccounts() {
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Create Record"}</h2>
+            <h2 className="modal-title">{editingIndex !== null ? "Edit Incident" : "Add New Incident"}</h2>
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Account Name</label>
+                <label>Incident</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.accountName} 
-                  onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} 
+                  value={formData.incident} 
+                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
                 />
               </div>
 
               <div className="form-group">
-                <label>Platform</label>
+                <label>Username</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.platform} 
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Compromised Accounts</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.compromisedAccount} 
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
+                  value={formData.username} 
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
                 />
               </div>
 
@@ -305,15 +263,6 @@ export default function CompromisedAccounts() {
               </div>
 
               <div className="form-group">
-                <label>Incident</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.incident} 
-                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
                 <label>Status</label>
                 <select 
                   value={formData.status} 
@@ -323,24 +272,6 @@ export default function CompromisedAccounts() {
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>
-              </div>
-
-              <div className="form-group">
-                <label>Officer Responsible</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.officer} 
-                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Reference Number</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.referenceNumber} 
-                  onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })} 
-                />
               </div>
 
               <div className="modal-actions">

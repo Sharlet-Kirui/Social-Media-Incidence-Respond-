@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import './global.css';
+import '../global.css';
 
 const emptyForm = {
   accountName: "",

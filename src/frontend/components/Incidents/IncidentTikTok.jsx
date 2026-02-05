@@ -1,33 +1,30 @@
 import React, { useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import './global.css';
+import '../global.css';
 
 const emptyForm = {
   incident: "",
-  username: "",
+  url: "",
   dateReported: "",
   status: "Active",
+  officer: "",
 };
 
-export default function IncidentTelegram() {
+export default function IncidentTikTok() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
   
-  // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
   const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
 
-  // Calculate Stats
   const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
-
-  // --- Handlers ---
 
   const openCreate = () => {
     setFormData(emptyForm);
@@ -64,30 +61,16 @@ export default function IncidentTelegram() {
     setMenuIndex(null);
   };
 
-  // --- Filter Logic ---
   const handleApplyFilters = () => {
-    setAppliedFilters({
-      date: tempFilterDate,
-      status: tempFilterStatus
-    });
+    setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus });
   };
 
   const filteredRows = rows.filter(row => {
-    // 1. Search Check (Incident or Username)
     const matchesSearch = 
       row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.username.toLowerCase().includes(searchTerm.toLowerCase());
-
-    // 2. Date Check
-    const matchesDate = appliedFilters.date 
-      ? row.dateReported === appliedFilters.date 
-      : true;
-
-    // 3. Status Check
-    const matchesStatus = appliedFilters.status 
-      ? row.status === appliedFilters.status 
-      : true;
-
+      row.url.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDate = appliedFilters.date ? row.dateReported === appliedFilters.date : true;
+    const matchesStatus = appliedFilters.status ? row.status === appliedFilters.status : true;
     return matchesSearch && matchesDate && matchesStatus;
   });
 
@@ -97,127 +80,83 @@ export default function IncidentTelegram() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
-            {/* Telegram Logo SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21.68 3.32a2.3 2.3 0 0 0-2.35-.38l-17 6.6a2.3 2.3 0 0 0 .1 4.28l4.9 1.52 1.9 5.7a1.2 1.2 0 0 0 2.2 0l2.3-4.1 6.3 4.6a2.3 2.3 0 0 0 3.7-1.7V4.3a2.3 2.3 0 0 0-.35-1zM6.9 14.6l12.1-8.1-10 9.7z" fill="white"/>
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 1 0 1 13.6 6.84 6.84 0 0 0 6.82-6.85V7.97a10.32 10.32 0 0 0 5.25 1.5V6.05a6.47 6.47 0 0 1-3.84-.86z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>Telegram Incidents</h1>
+          <h1>TikTok Incidents</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
 
-      {/* 2. Stats Cards Section */}
+      {/* 2. Stats & Actions */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3>
-          <span className="stat-number">{activeCount}</span>
+          <h3>Active</h3><span className="stat-number">{activeCount}</span>
         </div>
         <div className="stat-card">
-          <h3>Pending</h3>
-          <span className="stat-number">{pendingCount}</span>
+          <h3>Pending</h3><span className="stat-number">{pendingCount}</span>
         </div>
         <div className="stat-card">
-          <h3>Resolved</h3>
-          <span className="stat-number">{resolvedCount}</span>
+          <h3>Resolved</h3><span className="stat-number">{resolvedCount}</span>
         </div>
       </div>
 
-      {/* 3. Actions Section */}
       <div className="action-bar">
-        {/* Left: Filters */}
         <div className="left-actions">
-           {/* Date Filter */}
-           <input 
-            type="date" 
-            className="filter-input" 
-            value={tempFilterDate}
-            onChange={(e) => setTempFilterDate(e.target.value)}
-          />
-
-          {/* Status Filter */}
-          <select 
-            className="filter-input"
-            value={tempFilterStatus}
-            onChange={(e) => setTempFilterStatus(e.target.value)}
-          >
+           <input type="date" className="filter-input" value={tempFilterDate} onChange={(e) => setTempFilterDate(e.target.value)}/>
+          <select className="filter-input" value={tempFilterStatus} onChange={(e) => setTempFilterStatus(e.target.value)}>
             <option value="">All Statuses</option>
             <option value="Active">Active</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
-          
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
-
-        {/* Middle: Search */}
         <div className="center-actions">
-           <input 
-              type="text" 
-              placeholder="Search Incident or Username" 
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-           />
+           <input type="text" placeholder="Search Incident or URL" className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
-
-        {/* Right: Add Button */}
         <div className="right-actions">
-          <button className="btn-primary" onClick={openCreate}>
-            <Plus size={18} /> Add New
-          </button>
+          <button className="btn-primary" onClick={openCreate}><Plus size={18} /> Add New</button>
         </div>
       </div>
 
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-tg-no">No.</div>
-          <div className="th-cell col-tg-incident">Incident</div>
-          <div className="th-cell col-tg-username">Username</div>
-          <div className="th-cell col-tg-date">Date Reported</div>
-          <div className="th-cell col-tg-status">Status</div>
-          <div className="th-cell col-tg-action">Action</div>
+          <div className="th-cell col-tiktok-no">No.</div>
+          <div className="th-cell col-tiktok-incident">Incident</div>
+          <div className="th-cell col-tiktok-url">URL</div>
+          <div className="th-cell col-tiktok-date">Date Reported</div>
+          <div className="th-cell col-tiktok-status">Status</div>
+          <div className="th-cell col-tiktok-officer">Officer</div>
+          <div className="th-cell col-tiktok-action">Action</div>
         </div>
 
-        {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-tg-no">{i + 1}</div>
-              <div className="td-cell col-tg-incident">{row.incident}</div>
-              <div className="td-cell col-tg-username">{row.username}</div>
-              <div className="td-cell col-tg-date">{row.dateReported}</div>
-              <div className="td-cell col-tg-status">
-                <span className={`status-badge ${
-                    row.status === "Active" ? "status-active" : 
-                    row.status === "Pending" ? "status-pending" : "status-resolved"
-                }`}>
+              <div className="td-cell col-tiktok-no">{i + 1}</div>
+              <div className="td-cell col-tiktok-incident">{row.incident}</div>
+              <div className="td-cell col-tiktok-url">{row.url}</div>
+              <div className="td-cell col-tiktok-date">{row.dateReported}</div>
+              <div className="td-cell col-tiktok-status">
+                <span className={`status-badge ${row.status === "Active" ? "status-active" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
                   {row.status}
                 </span>
               </div>
-              
-              <div className="td-cell col-tg-action relative">
+              <div className="td-cell col-tiktok-officer">{row.officer}</div>
+              <div className="td-cell col-tiktok-action relative">
                 <div className="action-btn-group">
-                  <button onClick={() => openEdit(i)} className="icon-btn">
-                    <Edit2 size={16} />
-                  </button>
-                  <button onClick={() => setMenuIndex(menuIndex === i ? null : i)} className="icon-btn">
-                    <MoreHorizontal size={16} />
-                  </button>
+                  <button onClick={() => openEdit(i)} className="icon-btn"><Edit2 size={16} /></button>
+                  <button onClick={() => setMenuIndex(menuIndex === i ? null : i)} className="icon-btn"><MoreHorizontal size={16} /></button>
                 </div>
-
-                {/* Dropdown Menu */}
                 {menuIndex === i && (
                   <div className="dropdown-menu">
-                    <button onClick={() => handleDuplicate(i)} className="dropdown-item">
-                      <Copy size={14} /> Duplicate
-                    </button>
-                    <button onClick={() => handleDelete(i)} className="dropdown-item danger">
-                      <Trash size={14} /> Delete
-                    </button>
+                    <button onClick={() => handleDuplicate(i)} className="dropdown-item"><Copy size={14} /> Duplicate</button>
+                    <button onClick={() => handleDelete(i)} className="dropdown-item danger"><Trash size={14} /> Delete</button>
                   </div>
                 )}
               </div>
@@ -232,48 +171,32 @@ export default function IncidentTelegram() {
       {isOpen && (
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">{editingIndex !== null ? "Edit Incident" : "Add New Incident"}</h2>
-            
+            <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Add New Incident"}</h2>
             <div className="modal-form">
               <div className="form-group">
                 <label>Incident</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.incident} 
-                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
-                />
+                <input placeholder="Value" value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })} />
               </div>
-
               <div className="form-group">
-                <label>Username</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.username} 
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
-                />
+                <label>URL</label>
+                <input placeholder="Value" value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
               </div>
-
               <div className="form-group">
                 <label>Date Reported</label>
-                <input 
-                  type="date" 
-                  value={formData.dateReported} 
-                  onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })} 
-                />
+                <input type="date" value={formData.dateReported} onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })} />
               </div>
-
+              <div className="form-group">
+                <label>Officer Responsible</label>
+                <input placeholder="Value" value={formData.officer} onChange={(e) => setFormData({ ...formData, officer: e.target.value })} />
+              </div>
               <div className="form-group">
                 <label>Status</label>
-                <select 
-                  value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                >
+                <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
                   <option value="Active">Active</option>
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>
               </div>
-
               <div className="modal-actions">
                 <button onClick={() => setIsOpen(false)} className="btn-cancel">Cancel</button>
                 <button onClick={handleSubmit} className="btn-add">Save</button>
