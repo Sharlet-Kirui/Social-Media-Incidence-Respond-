@@ -21,6 +21,7 @@ import IncidentMeta from './frontend/components/IncidentMeta';
 import SignIn from './frontend/components/SignIn';
 import SignUp from './frontend/components/SIgnUp';
 import LatestResponded from './frontend/components/LatestResponded';
+import Dashboard from './frontend/components/Dashboard';
 
 
 
@@ -31,7 +32,7 @@ function App() {
       <NavBar />
       <div style={{ paddingTop: '64px', paddingLeft: '40px', paddingRight: '40px' }}>
         <Routes>
-          <Route path="/" element={<h1>Home Page</h1>} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/incidence" element={<h1>Incidence Dashboard</h1>} />
           <Route path="/incidence/X" element={<IncidentX />} />
           <Route path="/incidence/meta" element={<IncidentMeta />} />
