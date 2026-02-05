@@ -7,7 +7,7 @@ import { User, Settings, LogOut, LockKeyhole } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <nav className="navbar"> f
+    <nav className="navbar"> 
       {/* Brand / Logo */}
       <div className="navbar-logo">MyApp</div>
 
@@ -30,7 +30,7 @@ const Navbar = () => {
         <li className="nav-item">
           {/* Note: You can make the main label a link or just a span */}
           <NavLink to="/incidence/X" className="nav-link">
-            Incidence{" "}
+            Incidents{" "}
             <span style={{ fontSize: "10px", marginLeft: "5px" }}>▼</span>
           </NavLink>
 
