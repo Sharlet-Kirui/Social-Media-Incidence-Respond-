@@ -5,23 +5,21 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // 2. Import your NavBar
 import NavBar from './frontend/global/NavBar';
-import CompromisedAccounts from './frontend/components/CompromisedAccounts';
 
 // Import your new component
-import IncidentWhatsApp from './frontend/components/IncidentWhatsApp';
-import LinkedInIncidents from './frontend/components/IncidentLinkedIn';
-import Profile from './frontend/components/Profile';
+import IncidentWhatsApp from './frontend/components/Incidents/IncidentWhatsApp';
+import LinkedInIncidents from './frontend/components/Incidents/IncidentLinkedIn';
+import Profile from './frontend/global/Profile';
 import Verifications from './frontend/components/Verifications/xverifications';
 import Metaverifications from './frontend/components/Verifications/Metaverifications';
-import Officials from './frontend/components/GovernmentOfficials/Officials';
-import IncidentX from './frontend/components/IncidentX';
-import IncidentTelegram from './frontend/components/IncidentTelegram';
-import IncidentTikTok from './frontend/components/IncidentTikTok';
-import IncidentMeta from './frontend/components/IncidentMeta';
-import SignIn from './frontend/components/SignIn';
-import SignUp from './frontend/components/SIgnUp';
-import LatestResponded from './frontend/components/LatestResponded';
-import Dashboard from './frontend/components/Dashboard';
+import IncidentX from './frontend/components/Incidents/IncidentX';
+import IncidentTelegram from './frontend/components/Incidents/IncidentTelegram';
+import IncidentTikTok from './frontend/components/Incidents/IncidentTikTok';
+import IncidentMeta from './frontend/components/Incidents/IncidentMeta';
+import SignIn from './frontend/global/SignIn';
+import SignUp from './frontend/global/SIgnUp';
+import LatestResponded from './frontend/components/LatestResponded/LatestResponded';
+import Dashboard from './frontend/components/Dashboard/Dashboard';
 
 
 
@@ -33,26 +31,19 @@ function App() {
       <div style={{ paddingTop: '64px', paddingLeft: '40px', paddingRight: '40px' }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/incidence" element={<h1>Incidence Dashboard</h1>} />
+
           <Route path="/incidence/X" element={<IncidentX />} />
           <Route path="/incidence/meta" element={<IncidentMeta />} />
           <Route path="/incidence/telegram" element={<IncidentTelegram />} />
           <Route path="/incidence/tiktok" element={<IncidentTikTok />} />
           <Route path="/incidence/whatsapp" element={<IncidentWhatsApp />} />
-          
-          {/* Placeholders for other routes */}
-          <Route path="/incidence/X" element={<h1>X Incidents</h1>} />
-          <Route path="/incidence/meta" element={<h1>Meta Incidents</h1>} />
-          <Route path="/incidence/telegram" element={<h1>Telegram Incidents</h1>} />
-          <Route path="/incidence/tiktok" element={<h1>TikTok Incidents</h1>} />
           <Route path="/incidence/linkedIn" element={<LinkedInIncidents/>} />
 
           <Route path="/verification/meta" element={<Metaverifications/>} />
           <Route path="/verification/X" element={<Verifications/>} />
-          <Route path="/compromisedaccounts" element= {<CompromisedAccounts />} />
+
           <Route path="/latestResponded" element={<LatestResponded/>} />
 
-          <Route path="/governmentOfficials" element={<Officials/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/SignUp" element={<SignUp />} />
