@@ -279,7 +279,7 @@
   font-size: 11px; /* Reduced from 12px */
   font-weight: 600;
 }
-.status-active { background: #fee2e2; color: #dc2626; }
+.status-rejected { background: #fee2e2; color: #dc2626; }
 .status-pending { background: #fef9c3; color: #ca8a04; }
 .status-resolved { background: #dcfce7; color: #16a34a; }
 

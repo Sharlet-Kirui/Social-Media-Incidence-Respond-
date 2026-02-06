@@ -4,10 +4,10 @@ import '../global.css';
 
 const emptyForm = {
   accountName: "",
-  platform: "X (Twitter)",
   url: "",
   dateReported: "",
-  status: "Active",
+  incident: "",
+  status: "Pending",
   officer: "",
 };
 
@@ -21,9 +21,10 @@ export default function IncidentX() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
+  const [tempFilterIncident, setTempFilterIncident] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "", incident : "" });
 
-  const activeCount = rows.filter(r => r.status === "Active").length;
+  const rejectedCount = rows.filter(r => r.status === "Rejected").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
@@ -63,16 +64,19 @@ export default function IncidentX() {
   };
 
   const handleApplyFilters = () => {
-    setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus });
+    setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus, incident: tempFilterIncident });
   };
 
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
       row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.url.toLowerCase().includes(searchTerm.toLowerCase());
+      row.officer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.incident.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = appliedFilters.date ? row.dateReported === appliedFilters.date : true;
     const matchesStatus = appliedFilters.status ? row.status === appliedFilters.status : true;
-    return matchesSearch && matchesDate && matchesStatus;
+    const matchesIncident = appliedFilters.incident ? row.incident === appliedFilters.incident : true;
+    return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
   return (
@@ -95,7 +99,7 @@ export default function IncidentX() {
       {/* 2. Stats & Actions */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3><span className="stat-number">{activeCount}</span>
+          <h3>Rejected</h3><span className="stat-number">{rejectedCount}</span>
         </div>
         <div className="stat-card">
           <h3>Pending</h3><span className="stat-number">{pendingCount}</span>
@@ -110,14 +114,30 @@ export default function IncidentX() {
            <input type="date" className="filter-input" value={tempFilterDate} onChange={(e) => setTempFilterDate(e.target.value)}/>
           <select className="filter-input" value={tempFilterStatus} onChange={(e) => setTempFilterStatus(e.target.value)}>
             <option value="">All Statuses</option>
-            <option value="Active">Active</option>
+            <option value="Rejected">Rejected</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
+          </select>
+          <select className="filter-input" value={tempFilterIncident} onChange={(e) => setTempFilterIncident(e.target.value)}>
+            <option value="">All Incidents</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
+                  <option value="Verification">Verification</option>
           </select>
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
         <div className="center-actions">
-           <input type="text" placeholder="Search Account or URL" className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+           <input type="text" placeholder="Search Account/URL/Officer/Incident" className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
         <div className="right-actions">
           <button className="btn-primary" onClick={openCreate}><Plus size={18} /> Add New</button>
@@ -129,7 +149,6 @@ export default function IncidentX() {
         <div className="table-header">
           <div className="th-cell col-ix-no">No.</div>
           <div className="th-cell col-ix-name">Account Name</div>
-          <div className="th-cell col-ix-platform">Platform</div>
           <div className="th-cell col-ix-url">URL</div>
           <div className="th-cell col-ix-date">Date Reported</div>
           <div className="th-cell col-ix-status">Status</div>
@@ -142,11 +161,11 @@ export default function IncidentX() {
             <div key={i} className="table-row">
               <div className="td-cell col-ix-no">{i + 1}</div>
               <div className="td-cell col-ix-name">{row.accountName}</div>
-              <div className="td-cell col-ix-platform">{row.platform}</div>
               <div className="td-cell col-ix-url">{row.url}</div>
               <div className="td-cell col-ix-date">{row.dateReported}</div>
+              <div className="td-cell col-ix-incident">{row.incident}</div>
               <div className="td-cell col-ix-status">
-                <span className={`status-badge ${row.status === "Active" ? "status-active" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
+                <span className={`status-badge ${row.status === "Rejected" ? "status-rejected" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
                   {row.status}
                 </span>
               </div>
@@ -181,10 +200,6 @@ export default function IncidentX() {
                 <input placeholder="Value" value={formData.accountName} onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} />
               </div>
               <div className="form-group">
-                <label>Platform</label>
-                <input placeholder="Value" value={formData.platform} onChange={(e) => setFormData({ ...formData, platform: e.target.value })} />
-              </div>
-              <div className="form-group">
                 <label>URL</label>
                 <input placeholder="Value" value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
               </div>
@@ -199,7 +214,7 @@ export default function IncidentX() {
               <div className="form-group">
                 <label>Status</label>
                 <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
-                  <option value="Active">Active</option>
+                  <option value="Rejected">Rejected</option>
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>

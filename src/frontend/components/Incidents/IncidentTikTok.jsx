@@ -6,7 +6,7 @@ const emptyForm = {
   incident: "",
   url: "",
   dateReported: "",
-  status: "Active",
+  status: "Rejected",
   officer: "",
 };
 
@@ -22,7 +22,7 @@ export default function IncidentTikTok() {
   const [tempFilterStatus, setTempFilterStatus] = useState("");
   const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
 
-  const activeCount = rows.filter(r => r.status === "Active").length;
+  const rejectedCount = rows.filter(r => r.status === "Rejected").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
@@ -94,7 +94,7 @@ export default function IncidentTikTok() {
       {/* 2. Stats & Actions */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3><span className="stat-number">{activeCount}</span>
+          <h3>Rejected</h3><span className="stat-number">{rejectedCount}</span>
         </div>
         <div className="stat-card">
           <h3>Pending</h3><span className="stat-number">{pendingCount}</span>
@@ -109,7 +109,7 @@ export default function IncidentTikTok() {
            <input type="date" className="filter-input" value={tempFilterDate} onChange={(e) => setTempFilterDate(e.target.value)}/>
           <select className="filter-input" value={tempFilterStatus} onChange={(e) => setTempFilterStatus(e.target.value)}>
             <option value="">All Statuses</option>
-            <option value="Active">Active</option>
+            <option value="Rejected">Rejected</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
@@ -143,7 +143,7 @@ export default function IncidentTikTok() {
               <div className="td-cell col-tiktok-url">{row.url}</div>
               <div className="td-cell col-tiktok-date">{row.dateReported}</div>
               <div className="td-cell col-tiktok-status">
-                <span className={`status-badge ${row.status === "Active" ? "status-active" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
+                <span className={`status-badge ${row.status === "Rejected" ? "status-rejected" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
                   {row.status}
                 </span>
               </div>
@@ -192,7 +192,7 @@ export default function IncidentTikTok() {
               <div className="form-group">
                 <label>Status</label>
                 <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
-                  <option value="Active">Active</option>
+                  <option value="Rejected">Rejected</option>
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>
