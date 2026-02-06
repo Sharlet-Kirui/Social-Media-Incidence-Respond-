@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
 const emptyForm = {
   accountName: "",
   platform: "Facebook", // Default
+  maliciousAccount:"",
   dateReported: "",
+  incident:"",
   status: "Active",
   officer: "",
   refNumber: "",
@@ -17,6 +19,10 @@ export default function IncidentMeta() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +34,18 @@ export default function IncidentMeta() {
   const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+
+  const META_INCIDENTS_URL = "http://localhost:4000/meta-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/meta-incidents/upload-file"
+
+  useEffect(() => {
+      fetch(META_INCIDENTS_URL)
+      .then((response) => response.json())
+      .then((incidents) => setRows(incidents))
+      .catch((error) => {
+        console.log(error);
+      });
+    }, []);
 
   // --- Handlers ---
   const openCreate = () => {
@@ -49,6 +67,18 @@ export default function IncidentMeta() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(META_INCIDENTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -72,6 +102,31 @@ export default function IncidentMeta() {
       status: tempFilterStatus
     });
   };
+
+   const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+
+  }
 
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
@@ -160,6 +215,35 @@ export default function IncidentMeta() {
             <Plus size={18} /> Add New
           </button>
         </div>
+
+         <div className="right-actions">
+          <form>
+              {displayFileForm &&
+                <>
+                  <label htmlFor="meta-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+                  <input type="file" id="meta-incidents-file" hidden={true} onChange={()=> {
+                    if(document.getElementById("meta-incidents-file").value !== ""){
+                      setFilePath(event.target.files[0])
+                      setFileChosen(true)
+                      setDisplayFileForm(false)
+                    }
+                  }
+                }/>
+                </>
+              }
+              
+              
+              {fileChosen &&
+                <>
+                <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                  setFileChosen(false)
+                  setDisplayFileForm(true)
+                }}/>
+                <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+                </>
+              }
+            </form>
+          </div>
       </div>
 
       {/* 4. Table Section */}
@@ -247,6 +331,15 @@ export default function IncidentMeta() {
                 </select>
               </div>
 
+               <div className="form-group">
+                <label>Malicious Account</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.maliciousAccount} 
+                  onChange={(e) => setFormData({ ...formData, maliciousAccount: e.target.value })} 
+                />
+              </div>
+
               <div className="form-group">
                 <label>Date Reported</label>
                 <input 
@@ -254,6 +347,24 @@ export default function IncidentMeta() {
                   value={formData.dateReported} 
                   onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })} 
                 />
+              </div>
+
+               <div className="form-group">
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
 
               <div className="form-group">
