@@ -28,12 +28,13 @@ export default function IncidentMeta() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
+  const [tempFilterIncident, setTempFilterIncident] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "", incident: "" });
 
   // Calculate Stats
-  const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+  const rejectedCount = rows.filter(r => r.status === "Rejected").length;
 
   const META_INCIDENTS_URL = "http://localhost:4000/meta-incidents/"
   const FILE_UPLOAD_URL = "http://localhost:4000/meta-incidents/upload-file"
@@ -99,7 +100,8 @@ export default function IncidentMeta() {
   const handleApplyFilters = () => {
     setAppliedFilters({
       date: tempFilterDate,
-      status: tempFilterStatus
+      status: tempFilterStatus,
+      incident: tempFilterIncident,
     });
   };
 
@@ -131,7 +133,9 @@ export default function IncidentMeta() {
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
       row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.refNumber.toLowerCase().includes(searchTerm.toLowerCase());
+      row.refNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.officer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.incident.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
@@ -141,7 +145,11 @@ export default function IncidentMeta() {
       ? row.status === appliedFilters.status 
       : true;
 
-    return matchesSearch && matchesDate && matchesStatus;
+    const matchesIncident = appliedFilters.incident 
+      ? row.incident === appliedFilters.incident 
+      : true;
+
+    return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
   return (
@@ -165,16 +173,16 @@ export default function IncidentMeta() {
       {/* 2. Stats Cards Section */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3>
-          <span className="stat-number">{activeCount}</span>
-        </div>
-        <div className="stat-card">
           <h3>Pending</h3>
           <span className="stat-number">{pendingCount}</span>
         </div>
         <div className="stat-card">
           <h3>Resolved</h3>
           <span className="stat-number">{resolvedCount}</span>
+        </div>
+        <div className="stat-card">
+          <h3>Rejected</h3>
+          <span className="stat-number">{rejectedCount}</span>
         </div>
       </div>
 
@@ -193,17 +201,38 @@ export default function IncidentMeta() {
             onChange={(e) => setTempFilterStatus(e.target.value)}
           >
             <option value="">All Statuses</option>
-            <option value="Active">Active</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
+            <option value="Rejected">Rejected</option>
           </select>
+            <select
+            className="filter-input"
+            value={tempFilterIncident}
+            onChange={(e) => setTempFilterIncident(e.target.value)}
+          >
+            <option value="">All Incidents</option>
+            <option value="Hate Speech">Hate Speech</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
+                  <option value="Verification">Verification</option>
+          </select>
+
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
 
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Name or Ref No." 
+              placeholder="Search" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -250,12 +279,13 @@ export default function IncidentMeta() {
       <div className="table-container">
         <div className="table-header">
           <div className="th-cell col-meta-no">No.</div>
-          <div className="th-cell col-meta-name">Account Name</div>
-          <div className="th-cell col-meta-platform">Platform</div>
+          <div className="th-cell col-meta-name">Account Name/ Description</div>
+          <div className="th-cell col-meta-url">Malicious Account/ URL</div>
           <div className="th-cell col-meta-date">Date Reported</div>
+          <div className="th-cell col-meta-incident">Incident</div>
           <div className="th-cell col-meta-status">Status</div>
           <div className="th-cell col-meta-officer">Officer</div>
-          <div className="th-cell col-meta-ref">Ref Number</div>
+          <div className="th-cell col-meta-ref">Reference Number</div>
           <div className="th-cell col-meta-action">Action</div>
         </div>
 
@@ -264,11 +294,12 @@ export default function IncidentMeta() {
             <div key={i} className="table-row">
               <div className="td-cell col-meta-no">{i + 1}</div>
               <div className="td-cell col-meta-name">{row.accountName}</div>
-              <div className="td-cell col-meta-platform">{row.platform}</div>
+              <div className="td-cell col-ix-url">{row.url}</div>
               <div className="td-cell col-meta-date">{row.dateReported}</div>
+              <div className="td-cell col-meta-incident">{row.incident}</div>
               <div className="td-cell col-meta-status">
                 <span className={`status-badge ${
-                    row.status === "Active" ? "status-active" : 
+                    row.status === "Rejected" ? "status-rejected" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
                 }`}>
                   {row.status}
@@ -312,7 +343,7 @@ export default function IncidentMeta() {
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Account Name</label>
+                <label>Account Name/Description </label>
                 <input 
                   placeholder="Value" 
                   value={formData.accountName} 
@@ -321,14 +352,8 @@ export default function IncidentMeta() {
               </div>
 
               <div className="form-group">
-                <label>Platform</label>
-                <select 
-                  value={formData.platform} 
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
-                >
-                  <option value="Facebook">Facebook</option>
-                  <option value="Instagram">Instagram</option>
-                </select>
+                <label>Malicious Accounts (URL) </label>
+                <input placeholder="Value" value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
               </div>
 
                <div className="form-group">
@@ -368,7 +393,42 @@ export default function IncidentMeta() {
               </div>
 
               <div className="form-group">
-                <label>Ref Number</label>
+                <label>Incident</label>
+                <select 
+                  value={formData.incident} 
+                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })}
+                  >
+                  <option value="">All Incidents</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
+                  <option value="Verification">Verification</option>
+                </select> 
+              </div>
+
+              <div className="form-group">
+                <label>Status</label>
+                <select 
+                  value={formData.status} 
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Reference Number</label>
                 <input 
                   placeholder="Value" 
                   value={formData.refNumber} 
@@ -383,18 +443,6 @@ export default function IncidentMeta() {
                   value={formData.officer} 
                   onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
                 />
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select 
-                  value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Resolved">Resolved</option>
-                </select>
               </div>
 
               <div className="modal-actions">

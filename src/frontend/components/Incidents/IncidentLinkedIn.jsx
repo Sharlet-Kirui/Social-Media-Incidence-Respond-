@@ -6,7 +6,7 @@ const emptyForm = {
   accountName: "", // Maps to Account Name / Description
   url: "",
   dateReported: "",
-  status: "Active",
+  status: "Pending",
   officer: "",
 };
 
@@ -24,9 +24,9 @@ export default function IncidentLinkedIn() {
   const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
 
   // Calculate Stats
-  const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+  const rejectedCount = rows.filter(r => r.status === "Rejected").length;
 
   // --- Handlers ---
 
@@ -113,16 +113,16 @@ export default function IncidentLinkedIn() {
       {/* 2. Stats Cards Section */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3>
-          <span className="stat-number">{activeCount}</span>
-        </div>
-        <div className="stat-card">
           <h3>Pending</h3>
           <span className="stat-number">{pendingCount}</span>
         </div>
         <div className="stat-card">
           <h3>Resolved</h3>
           <span className="stat-number">{resolvedCount}</span>
+        </div>
+        <div className="stat-card">
+          <h3>Rejected</h3>
+          <span className="stat-number">{rejectedCount}</span>
         </div>
       </div>
 
@@ -145,9 +145,9 @@ export default function IncidentLinkedIn() {
             onChange={(e) => setTempFilterStatus(e.target.value)}
           >
             <option value="">All Statuses</option>
-            <option value="Active">Active</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
+            <option value="Rejected">Rejected</option>
           </select>
           
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
@@ -194,7 +194,7 @@ export default function IncidentLinkedIn() {
               <div className="td-cell col-li-date">{row.dateReported}</div>
               <div className="td-cell col-li-status">
                 <span className={`status-badge ${
-                    row.status === "Active" ? "status-active" : 
+                    row.status === "Rejected" ? "status-rejected" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
                 }`}>
                   {row.status}
@@ -280,9 +280,9 @@ export default function IncidentLinkedIn() {
                   value={formData.status} 
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                 >
-                  <option value="Active">Active</option>
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
+                  <option value="Rejected">Rejected</option>
                 </select>
               </div>
 
