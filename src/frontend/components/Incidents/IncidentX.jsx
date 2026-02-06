@@ -1,4 +1,5 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
@@ -123,14 +124,80 @@ export default function IncidentX() {
 
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
-      row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.officer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.incident.toLowerCase().includes(searchTerm.toLowerCase());
+      (row.accountName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (row.officer || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (row.url || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (row.incident || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = appliedFilters.date ? row.dateReported === appliedFilters.date : true;
     const matchesStatus = appliedFilters.status ? row.status === appliedFilters.status : true;
     const matchesIncident = appliedFilters.incident ? row.incident === appliedFilters.incident : true;
     return matchesSearch && matchesDate && matchesStatus && matchesIncident;
+  });
+
+  const columns = useMemo(() => [
+    {
+      header: "No.",
+      accessorFn: (row, i) => i + 1, // Auto-generate index
+    },
+    {
+      header: "Account Name",
+      accessorKey: "accountName",
+    },
+    {
+      header: "URL",
+      accessorKey: "url",
+      // Custom render for blue text
+      cell: info => <span style={{ color: '#0164A6' }}>{info.getValue()}</span>
+    },
+    {
+      header: "Date Reported",
+      accessorKey: "dateReported",
+    },
+    {
+      header: "Incident",
+      accessorKey: "incident",
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: info => {
+        const status = info.getValue();
+        const statusClass = 
+          status === "Rejected" ? "status-rejected" : 
+          status === "Pending" ? "status-pending" : "status-resolved";
+        return <span className={`status-badge ${statusClass}`}>{status}</span>
+      }
+    },
+    {
+      header: "Officer",
+      accessorKey: "officer",
+    },
+    {
+      id: "actions",
+      header: "Action",
+      cell: ({ row }) => {
+        const i = row.index;
+        return (
+          <div className="action-btn-group relative">
+             <button onClick={() => openEdit(i)} className="icon-btn"><Edit2 size={16} /></button>
+             <button onClick={() => setMenuIndex(menuIndex === i ? null : i)} className="icon-btn"><MoreHorizontal size={16} /></button>
+             {menuIndex === i && (
+                <div className="dropdown-menu">
+                  <button onClick={() => handleDuplicate(i)} className="dropdown-item"><Copy size={14} /> Duplicate</button>
+                  <button onClick={() => handleDelete(i)} className="dropdown-item danger"><Trash size={14} /> Delete</button>
+                </div>
+             )}
+          </div>
+        )
+      }
+    }
+  ], [rows, menuIndex]); // Re-render if rows or menu changes
+
+  // 2. Initialize the table instance
+  const table = useReactTable({
+    data: filteredRows, // Use your filteredRows variable here
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
 
   return (
@@ -227,49 +294,39 @@ export default function IncidentX() {
       </div>
 
       {/* 4. Table Section */}
-      <div className="table-container">
-        <div className="table-header">
-          <div className="th-cell col-ix-no">No.</div>
-          <div className="th-cell col-ix-name">Account Name</div>
-          <div className="th-cell col-ix-url">URL</div>
-          <div className="th-cell col-ix-date">Date Reported</div>
-          <div className="th-cell col-ix-platform">Incident</div>
-          <div className="th-cell col-ix-status">Status</div>
-          <div className="th-cell col-ix-officer">Officer</div>
-          <div className="th-cell col-ix-action">Action</div>
-        </div>
-
-        {filteredRows.length > 0 ? (
-          filteredRows.map((row, i) => (
-            <div key={i} className="table-row">
-              <div className="td-cell col-ix-no">{i + 1}</div>
-              <div className="td-cell col-ix-name">{row.accountName}</div>
-              <div className="td-cell col-ix-url">{row.url}</div>
-              <div className="td-cell col-ix-date">{row.dateReported}</div>
-              <div className="td-cell col-ix-incident">{row.incident}</div>
-              <div className="td-cell col-ix-status">
-                <span className={`status-badge ${row.status === "Rejected" ? "status-rejected" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
-                  {row.status}
-                </span>
-              </div>
-              <div className="td-cell col-ix-officer">{row.officer}</div>
-              <div className="td-cell col-ix-action relative">
-                <div className="action-btn-group">
-                  <button onClick={() => openEdit(i)} className="icon-btn"><Edit2 size={16} /></button>
-                  <button onClick={() => setMenuIndex(menuIndex === i ? null : i)} className="icon-btn"><MoreHorizontal size={16} /></button>
-                </div>
-                {menuIndex === i && (
-                  <div className="dropdown-menu">
-                    <button onClick={() => handleDuplicate(i)} className="dropdown-item"><Copy size={14} /> Duplicate</button>
-                    <button onClick={() => handleDelete(i)} className="dropdown-item danger"><Trash size={14} /> Delete</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="table-body-empty">No records found</div>
-        )}
+      <div className="table-wrapper">
+        <table className="dynamic-table">
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map(row => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map(cell => (
+                    <td key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="table-body-empty">
+                  No records found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* --- POP-UP MODAL --- */}
