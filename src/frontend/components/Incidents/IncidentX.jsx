@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
@@ -17,6 +17,10 @@ export default function IncidentX() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
@@ -27,6 +31,18 @@ export default function IncidentX() {
   const rejectedCount = rows.filter(r => r.status === "Rejected").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+
+  const X_INCIDENTS_URL = "http://localhost:4000/x-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/x-incidents/upload-file"
+
+  useEffect(() => {
+    fetch(X_INCIDENTS_URL)
+    .then((response) => response.json())
+    .then((incidents) => setRows(incidents))
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
 
   const openCreate = () => {
     setFormData(emptyForm);
@@ -47,6 +63,18 @@ export default function IncidentX() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(X_INCIDENTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -66,6 +94,32 @@ export default function IncidentX() {
   const handleApplyFilters = () => {
     setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus, incident: tempFilterIncident });
   };
+
+  const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+
+    
+  }
 
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
@@ -142,6 +196,34 @@ export default function IncidentX() {
         <div className="right-actions">
           <button className="btn-primary" onClick={openCreate}><Plus size={18} /> Add New</button>
         </div>
+        <div className="right-actions">
+          <form>
+            {displayFileForm &&
+              <>
+               <label htmlFor="x-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="x-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("x-incidents-file").value !== ""){
+                  setFilePath(event.target.files[0])
+                  setFileChosen(true)
+                  setDisplayFileForm(false)
+                }
+              }
+              }/>
+              </>
+            }
+            
+            
+            {fileChosen &&
+              <>
+              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                setFileChosen(false)
+                setDisplayFileForm(true)
+              }}/>
+              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+              </>
+            }
+          </form>
+        </div>
       </div>
 
       {/* 4. Table Section */}
@@ -151,6 +233,7 @@ export default function IncidentX() {
           <div className="th-cell col-ix-name">Account Name</div>
           <div className="th-cell col-ix-url">URL</div>
           <div className="th-cell col-ix-date">Date Reported</div>
+          <div className="th-cell col-ix-platform">Incident</div>
           <div className="th-cell col-ix-status">Status</div>
           <div className="th-cell col-ix-officer">Officer</div>
           <div className="th-cell col-ix-action">Action</div>
@@ -210,6 +293,23 @@ export default function IncidentX() {
               <div className="form-group">
                 <label>Officer Responsible</label>
                 <input placeholder="Value" value={formData.officer} onChange={(e) => setFormData({ ...formData, officer: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>Status</label>

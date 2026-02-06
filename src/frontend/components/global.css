@@ -120,6 +120,41 @@
 }
 .btn-primary:hover { background: #015086; }
 
+.btn-drop-file {
+  background: #b53f04;
+  color: #FFFFFF;
+  border: none;
+  height: 36px; /* Match input height */
+  padding: 0 20px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  font-size: 14px; /* Reduced from 16px */
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom:20px;
+}
+.btn-drop-file:hover { background: #8a3003; }
+
+.btn-submit-file {
+  background: #23ba4c;
+  color: #FFFFFF;
+  border: none;
+  height: 36px; /* Match input height */
+  padding: 0 20px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  font-size: 14px; /* Reduced from 16px */
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-submit-file:hover { background: #014212; }
+
 /* --- 4. Table Section --- */
 .table-container {
   width: 100%;
