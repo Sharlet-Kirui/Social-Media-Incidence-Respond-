@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
@@ -7,6 +7,7 @@ const emptyForm = {
   username: "",
   dateReported: "",
   status: "Rejected",
+  officer:"",
 };
 
 export default function IncidentTelegram() {
@@ -15,6 +16,10 @@ export default function IncidentTelegram() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +31,18 @@ export default function IncidentTelegram() {
   const rejectedCount = rows.filter(r => r.status === "Rejected").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+
+  const TELEGRAM_INCIDENTS_URL = "http://localhost:4000/telegram-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/telegram-incidents/upload-file"
+
+   useEffect(() => {
+      fetch(TELEGRAM_INCIDENTS_URL)
+      .then((response) => response.json())
+      .then((incidents) => setRows(incidents))
+      .catch((error) => {
+        console.log(error);
+      });
+    }, []);
 
   // --- Handlers ---
 
@@ -48,6 +65,18 @@ export default function IncidentTelegram() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(TELEGRAM_INCIDENTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });      
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -71,6 +100,30 @@ export default function IncidentTelegram() {
       status: tempFilterStatus
     });
   };
+
+  const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+  }
 
   const filteredRows = rows.filter(row => {
     // 1. Search Check (Incident or Username)
@@ -169,6 +222,35 @@ export default function IncidentTelegram() {
             <Plus size={18} /> Add New
           </button>
         </div>
+
+        <div className="right-actions">
+          <form>
+            {displayFileForm &&
+              <>
+                <label htmlFor="x-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+                <input type="file" id="x-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("x-incidents-file").value !== ""){
+                  setFilePath(event.target.files[0])
+                  setFileChosen(true)
+                  setDisplayFileForm(false)
+                }
+              }
+              }/>
+              </>
+            }
+            
+            
+            {fileChosen &&
+              <>
+              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                setFileChosen(false)
+                setDisplayFileForm(true)
+              }}/>
+              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+              </>
+            }
+          </form>
+        </div>
       </div>
 
       {/* 4. Table Section */}
@@ -179,6 +261,7 @@ export default function IncidentTelegram() {
           <div className="th-cell col-tg-username">Username</div>
           <div className="th-cell col-tg-date">Date Reported</div>
           <div className="th-cell col-tg-status">Status</div>
+          <div className="th-cell col-tg-incident">Officer</div>
           <div className="th-cell col-tg-action">Action</div>
         </div>
 
@@ -198,6 +281,7 @@ export default function IncidentTelegram() {
                   {row.status}
                 </span>
               </div>
+              <div className="td-cell col-tg-incident">{row.officer}</div>
               
               <div className="td-cell col-tg-action relative">
                 <div className="action-btn-group">
@@ -235,14 +319,6 @@ export default function IncidentTelegram() {
             <h2 className="modal-title">{editingIndex !== null ? "Edit Incident" : "Add New Incident"}</h2>
             
             <div className="modal-form">
-              <div className="form-group">
-                <label>Incident</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.incident} 
-                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
-                />
-              </div>
 
               <div className="form-group">
                 <label>Username</label>
@@ -251,6 +327,24 @@ export default function IncidentTelegram() {
                   value={formData.username} 
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
                 />
+              </div>
+
+              <div className="form-group">
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
 
               <div className="form-group">
@@ -272,6 +366,15 @@ export default function IncidentTelegram() {
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>
+              </div>
+
+               <div className="form-group">
+                <label>Officer</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.officer} 
+                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
+                />
               </div>
 
               <div className="modal-actions">
