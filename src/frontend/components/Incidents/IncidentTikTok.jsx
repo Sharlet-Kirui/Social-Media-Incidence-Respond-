@@ -24,7 +24,8 @@ export default function IncidentTikTok() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
+  const [tempFilterIncident, setTempFilterIncident] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "", incident:"" });
 
   const rejectedCount = rows.filter(r => r.status === "Rejected").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
@@ -90,7 +91,7 @@ export default function IncidentTikTok() {
   };
 
   const handleApplyFilters = () => {
-    setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus });
+    setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus, incident: tempFilterIncident});
   };
 
   const addRecords = () => {
@@ -125,7 +126,8 @@ export default function IncidentTikTok() {
       row.url.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = appliedFilters.date ? row.dateReported === appliedFilters.date : true;
     const matchesStatus = appliedFilters.status ? row.status === appliedFilters.status : true;
-    return matchesSearch && matchesDate && matchesStatus;
+    const matchesIncident = appliedFilters.incident ? row.incident === appliedFilters.incident : true;
+    return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
   return (
@@ -166,6 +168,23 @@ export default function IncidentTikTok() {
             <option value="Rejected">Rejected</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
+          </select>
+
+         <select className="filter-input" value={tempFilterIncident} onChange={(e) => setTempFilterIncident(e.target.value)}>
+            <option value="">All Incidents</option>
+            <option value="Hate Speech">Hate Speech</option>
+            <option value="Online Child Exploitation">Online Child Exploitation</option>
+            <option value="Publication of False Information">Publication of False Information</option>
+            <option value="Account Compromise">Account Compromise</option>
+            <option value="Impersonation">Impersonation</option>
+            <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+            <option value="Online Sextortion">Online Sextortion</option>
+            <option value="Cyber Harassment">Cyber Harassment</option>
+            <option value="Cyber Terrorism">Cyber Terrorism</option>
+            <option value="Data Breach">Data Breach</option>
+            <option value="Wrongful Suspension">Wrongful Suspension</option>
+            <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
+            <option value="Verification">Verification</option>
           </select>
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
