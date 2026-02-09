@@ -242,6 +242,7 @@ export default function IncidentMeta() {
         <div className="table-header">
           <div className="th-cell col-ix-no">No.</div>
           <div className="th-cell col-ix-name">Account Name</div>
+          <div className="th-cell col-ix-platform">Platform</div>
           <div className="th-cell col-ix-url">URL</div>
           <div className="th-cell col-ix-date">Date Reported</div>
           <div className="th-cell col-ix-platform">Incident</div>
@@ -256,6 +257,7 @@ export default function IncidentMeta() {
             <div key={i} className="table-row">
               <div className="td-cell col-ix-no">{i + 1}</div>
               <div className="td-cell col-ix-name">{row.accountName}</div>
+              <div className="td-cell col-ix-platform">{row.platform}</div>
               <div className="td-cell col-ix-url">{row.url}</div>
               <div className="td-cell col-ix-date">{row.dateReported}</div>
               <div className="td-cell col-ix-incident">{row.incident}</div>
