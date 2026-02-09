@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
@@ -16,6 +16,10 @@ export default function IncidentTikTok() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
@@ -26,6 +30,18 @@ export default function IncidentTikTok() {
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
+  const TIKTOK_INCIDENTS_URL = "http://localhost:4000/tiktok-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/tiktok-incidents/upload-file"
+
+  useEffect(() => {
+    fetch(TIKTOK_INCIDENTS_URL)
+    .then((response) => response.json())
+    .then((incidents) => setRows(incidents))
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
+  
   const openCreate = () => {
     setFormData(emptyForm);
     setEditingIndex(null);
@@ -45,6 +61,18 @@ export default function IncidentTikTok() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(TIKTOK_INCIDENTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -64,6 +92,32 @@ export default function IncidentTikTok() {
   const handleApplyFilters = () => {
     setAppliedFilters({ date: tempFilterDate, status: tempFilterStatus });
   };
+
+  const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+    
+  }
+
 
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
@@ -121,6 +175,35 @@ export default function IncidentTikTok() {
         <div className="right-actions">
           <button className="btn-primary" onClick={openCreate}><Plus size={18} /> Add New</button>
         </div>
+
+        <div className="right-actions">
+          <form>
+            {displayFileForm &&
+              <>
+               <label htmlFor="x-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="x-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("x-incidents-file").value !== ""){
+                  setFilePath(event.target.files[0])
+                  setFileChosen(true)
+                  setDisplayFileForm(false)
+                }
+              }
+              }/>
+              </>
+            }
+            
+            
+            {fileChosen &&
+              <>
+              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                setFileChosen(false)
+                setDisplayFileForm(true)
+              }}/>
+              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+              </>
+            }
+          </form>
+        </div>
       </div>
 
       {/* 4. Table Section */}
@@ -174,10 +257,6 @@ export default function IncidentTikTok() {
             <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Add New Incident"}</h2>
             <div className="modal-form">
               <div className="form-group">
-                <label>Incident</label>
-                <input placeholder="Value" value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })} />
-              </div>
-              <div className="form-group">
                 <label>URL</label>
                 <input placeholder="Value" value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
               </div>
@@ -188,6 +267,23 @@ export default function IncidentTikTok() {
               <div className="form-group">
                 <label>Officer Responsible</label>
                 <input placeholder="Value" value={formData.officer} onChange={(e) => setFormData({ ...formData, officer: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>Status</label>
