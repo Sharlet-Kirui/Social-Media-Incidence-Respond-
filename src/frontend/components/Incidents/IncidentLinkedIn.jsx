@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
@@ -8,6 +8,7 @@ const emptyForm = {
   dateReported: "",
   status: "Pending",
   officer: "",
+  incident:"",
 };
 
 export default function IncidentLinkedIn() {
@@ -16,6 +17,10 @@ export default function IncidentLinkedIn() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +32,18 @@ export default function IncidentLinkedIn() {
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
   const rejectedCount = rows.filter(r => r.status === "Rejected").length;
+
+  const LINKEDIN_INCIDENTS_URL = "http://localhost:4000/linkedin-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/linkedin-incidents/upload-file"
+
+  useEffect(() => {
+    fetch(LINKEDIN_INCIDENTS_URL)
+    .then((response) => response.json())
+    .then((incidents) => setRows(incidents))
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
 
   // --- Handlers ---
 
@@ -49,6 +66,18 @@ export default function IncidentLinkedIn() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
+      fetch(LINKEDIN_INCIDENTS_URL
+        , {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/JSON",
+        },
+        body: JSON.stringify(formData),
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
       setRows([...rows, formData]);
     }
     setIsOpen(false);
@@ -72,6 +101,30 @@ export default function IncidentLinkedIn() {
       status: tempFilterStatus
     });
   };
+
+  const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+  }
 
   const filteredRows = rows.filter(row => {
     // 1. Search Check (Name or URL)
@@ -170,6 +223,35 @@ export default function IncidentLinkedIn() {
             <Plus size={18} /> Add New
           </button>
         </div>
+
+        <div className="right-actions">
+          <form>
+            {displayFileForm &&
+              <>
+               <label htmlFor="linkedin-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="linkedin-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("linkedin-incidents-file").value !== ""){
+                  setFilePath(event.target.files[0])
+                  setFileChosen(true)
+                  setDisplayFileForm(false)
+                }
+              }
+              }/>
+              </>
+            }
+            
+            
+            {fileChosen &&
+              <>
+              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                setFileChosen(false)
+                setDisplayFileForm(true)
+              }}/>
+              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+              </>
+            }
+          </form>
+        </div>
       </div>
 
       {/* 4. Table Section */}
@@ -177,6 +259,7 @@ export default function IncidentLinkedIn() {
         <div className="table-header">
           <div className="th-cell col-li-no">No.</div>
           <div className="th-cell col-li-name">Account Name / Description</div>
+          <div className="th-cell col-li-name">Incident</div>
           <div className="th-cell col-li-url">URL</div>
           <div className="th-cell col-li-date">Date Reported</div>
           <div className="th-cell col-li-status">Status</div>
@@ -190,6 +273,7 @@ export default function IncidentLinkedIn() {
             <div key={i} className="table-row">
               <div className="td-cell col-li-no">{i + 1}</div>
               <div className="td-cell col-li-name">{row.accountName}</div>
+              <div className="td-cell col-li-name">{row.incident}</div>
               <div className="td-cell col-li-url">{row.url}</div>
               <div className="td-cell col-li-date">{row.dateReported}</div>
               <div className="td-cell col-li-status">
@@ -254,6 +338,24 @@ export default function IncidentLinkedIn() {
                   value={formData.url} 
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
                 />
+              </div>
+
+              <div className="form-group">
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
 
               <div className="form-group">

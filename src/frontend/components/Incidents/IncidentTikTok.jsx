@@ -180,9 +180,9 @@ export default function IncidentTikTok() {
           <form>
             {displayFileForm &&
               <>
-               <label htmlFor="x-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
-               <input type="file" id="x-incidents-file" hidden={true} onChange={()=> {
-                if(document.getElementById("x-incidents-file").value !== ""){
+               <label htmlFor="tiktok-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="tiktok-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("tiktok-incidents-file").value !== ""){
                   setFilePath(event.target.files[0])
                   setFileChosen(true)
                   setDisplayFileForm(false)

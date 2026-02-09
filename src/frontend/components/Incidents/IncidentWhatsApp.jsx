@@ -217,9 +217,9 @@ const IncidentWhatsApp = () => {
           <form>
             {displayFileForm &&
               <>
-               <label htmlFor="x-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
-               <input type="file" id="x-incidents-file" hidden={true} onChange={()=> {
-                if(document.getElementById("x-incidents-file").value !== ""){
+               <label htmlFor="whatsapp-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="whatsapp-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("whatsapp-incidents-file").value !== ""){
                   setFilePath(event.target.files[0])
                   setFileChosen(true)
                   setDisplayFileForm(false)
