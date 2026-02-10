@@ -3,9 +3,15 @@ import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
 const emptyForm = {
+<<<<<<< HEAD
   incidentDescription: "",
   channel: "", // Replaces username
   incident: "Hate Speech", 
+=======
+  incident: "",
+  channel: "",
+  description:"",
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
   dateReported: "",
   status: "Rejected",
 };
@@ -131,11 +137,18 @@ export default function IncidentTelegram() {
   }
 
   const filteredRows = rows.filter(row => {
+<<<<<<< HEAD
     const term = searchTerm.toLowerCase();
     const matchesSearch =
       (row.incidentDescription && row.incidentDescription.toLowerCase().includes(term)) ||
       (row.channel && row.channel.toLowerCase().includes(term)) ||
       (row.incident && row.incident.toLowerCase().includes(term));
+=======
+    // 1. Search Check (Incident or Username)
+    const matchesSearch = 
+      row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.channel.toLowerCase().includes(searchTerm.toLowerCase());
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
 
     // 2. Date Check
     const matchesDate = appliedFilters.date
@@ -233,6 +246,7 @@ export default function IncidentTelegram() {
 
         {/* Middle: Search */}
         <div className="center-actions">
+<<<<<<< HEAD
           <input
             type="text"
             placeholder="Search Description or Channel"
@@ -240,6 +254,15 @@ export default function IncidentTelegram() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+=======
+           <input 
+              type="text" 
+              placeholder="Search Incident or Channel" 
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+           />
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
         </div>
 
         {/* Right: Add Button */}
@@ -286,6 +309,11 @@ export default function IncidentTelegram() {
           <div className="th-cell col-tg-desc">Incident Description</div>
           <div className="th-cell col-tg-channel">Channel</div>
           <div className="th-cell col-tg-incident">Incident</div>
+<<<<<<< HEAD
+=======
+          <div className="th-cell col-tg-username">Channel</div>
+          <div className="th-cell col-tg-username">Description</div>
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
           <div className="th-cell col-tg-date">Date Reported</div>
           <div className="th-cell col-tg-status">Status</div>
           <div className="th-cell col-tg-action">Action</div>
@@ -299,6 +327,11 @@ export default function IncidentTelegram() {
               <div className="td-cell col-tg-desc">{row.incidentDescription}</div>
               <div className="td-cell col-tg-channel">{row.channel}</div>
               <div className="td-cell col-tg-incident">{row.incident}</div>
+<<<<<<< HEAD
+=======
+              <div className="td-cell col-tg-username">{row.channel}</div>
+              <div className="td-cell col-tg-username">{row.description}</div>
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
               <div className="td-cell col-tg-date">{row.dateReported}</div>
               <div className="td-cell col-tg-status">
                 <span className={`status-badge ${row.status === "Rejected" ? "status-rejected" :
@@ -346,20 +379,36 @@ export default function IncidentTelegram() {
             <div className="modal-form">
 
               <div className="form-group">
+<<<<<<< HEAD
                 <label>Incident Description</label>
                 <input
                   placeholder="Describe the incident"
                   value={formData.incidentDescription}
                   onChange={(e) => setFormData({ ...formData, incidentDescription: e.target.value })}
+=======
+                <label>Channel</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.channel} 
+                  onChange={(e) => setFormData({ ...formData, channel: e.target.value })} 
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
                 />
               </div>
 
               <div className="form-group">
+<<<<<<< HEAD
                 <label>Channel (URL or @handle)</label>
                 <input
                   placeholder="@username or https://t.me/..."
                   value={formData.channel}
                   onChange={(e) => setFormData({ ...formData, channel: e.target.value })}
+=======
+                <label>Description</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.description} 
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
+>>>>>>> 69841ce955be7fd6d3d67404569c72994d27b6ef
                 />
               </div>
 
