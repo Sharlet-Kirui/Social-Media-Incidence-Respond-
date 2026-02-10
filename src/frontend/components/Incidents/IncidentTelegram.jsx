@@ -4,7 +4,8 @@ import '../global.css';
 
 const emptyForm = {
   incident: "",
-  username: "",
+  channel: "",
+  description:"",
   dateReported: "",
   status: "Rejected",
   officer:"",
@@ -131,7 +132,7 @@ export default function IncidentTelegram() {
     // 1. Search Check (Incident or Username)
     const matchesSearch = 
       row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.username.toLowerCase().includes(searchTerm.toLowerCase());
+      row.channel.toLowerCase().includes(searchTerm.toLowerCase());
 
     // 2. Date Check
     const matchesDate = appliedFilters.date 
@@ -230,7 +231,7 @@ export default function IncidentTelegram() {
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Incident or Username" 
+              placeholder="Search Incident or Channel" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -279,7 +280,8 @@ export default function IncidentTelegram() {
         <div className="table-header">
           <div className="th-cell col-tg-no">No.</div>
           <div className="th-cell col-tg-incident">Incident</div>
-          <div className="th-cell col-tg-username">Username</div>
+          <div className="th-cell col-tg-username">Channel</div>
+          <div className="th-cell col-tg-username">Description</div>
           <div className="th-cell col-tg-date">Date Reported</div>
           <div className="th-cell col-tg-status">Status</div>
           <div className="th-cell col-tg-incident">Officer</div>
@@ -292,7 +294,8 @@ export default function IncidentTelegram() {
             <div key={i} className="table-row">
               <div className="td-cell col-tg-no">{i + 1}</div>
               <div className="td-cell col-tg-incident">{row.incident}</div>
-              <div className="td-cell col-tg-username">{row.username}</div>
+              <div className="td-cell col-tg-username">{row.channel}</div>
+              <div className="td-cell col-tg-username">{row.description}</div>
               <div className="td-cell col-tg-date">{row.dateReported}</div>
               <div className="td-cell col-tg-status">
                 <span className={`status-badge ${
@@ -342,11 +345,20 @@ export default function IncidentTelegram() {
             <div className="modal-form">
 
               <div className="form-group">
-                <label>Username</label>
+                <label>Channel</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.username} 
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
+                  value={formData.channel} 
+                  onChange={(e) => setFormData({ ...formData, channel: e.target.value })} 
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Description</label>
+                <input 
+                  placeholder="Value" 
+                  value={formData.description} 
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
                 />
               </div>
 
