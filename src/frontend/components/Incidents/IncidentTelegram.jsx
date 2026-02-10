@@ -1,13 +1,13 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
 
 const emptyForm = {
-  incident: "",
-  username: "",
+  incidentDescription: "",
+  channel: "", // Replaces username
+  incident: "Hate Speech", 
   dateReported: "",
   status: "Rejected",
-  officer:"",
 };
 
 export default function IncidentTelegram() {
@@ -16,17 +16,17 @@ export default function IncidentTelegram() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
-  const [fileChosen,setFileChosen] = useState(false)
-  const [displayFileForm,setDisplayFileForm] = useState(true)
-  const [filePath,setFilePath] = useState("")
+  const [fileChosen, setFileChosen] = useState(false)
+  const [displayFileForm, setDisplayFileForm] = useState(true)
+  const [filePath, setFilePath] = useState("")
   const fileData = new FormData()
-  
+
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
   const [tempFilterIncident, setTempFilterIncident] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" ,incident:""});
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "", incident: "" });
 
   // Calculate Stats
   const rejectedCount = rows.filter(r => r.status === "Rejected").length;
@@ -36,14 +36,14 @@ export default function IncidentTelegram() {
   const TELEGRAM_INCIDENTS_URL = "http://localhost:4000/telegram-incidents/"
   const FILE_UPLOAD_URL = "http://localhost:4000/telegram-incidents/upload-file"
 
-   useEffect(() => {
-      fetch(TELEGRAM_INCIDENTS_URL)
+  useEffect(() => {
+    fetch(TELEGRAM_INCIDENTS_URL)
       .then((response) => response.json())
       .then((incidents) => setRows(incidents))
       .catch((error) => {
         console.log(error);
       });
-    }, []);
+  }, []);
 
   // --- Handlers ---
 
@@ -62,23 +62,26 @@ export default function IncidentTelegram() {
 
   const handleSubmit = () => {
     if (editingIndex !== null) {
+      // Update Logic (Frontend Only for now unless you have a PATCH endpoint)
       const updated = [...rows];
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
       fetch(TELEGRAM_INCIDENTS_URL
         , {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/JSON",
-        },
-        body: JSON.stringify(formData),
-      })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.log(error);
-      });      
-      setRows([...rows, formData]);
+          method: "POST",
+          headers: {
+            "Content-Type": "Application/JSON",
+          },
+          body: JSON.stringify(formData),
+        })
+        .then((response) => response.json())
+        .then((newRecord) => {
+           setRows([...rows, newRecord]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
     setIsOpen(false);
     setFormData(emptyForm);
@@ -99,48 +102,49 @@ export default function IncidentTelegram() {
     setAppliedFilters({
       date: tempFilterDate,
       status: tempFilterStatus,
-      incident:tempFilterIncident
+      incident: tempFilterIncident
     });
   };
 
   const addRecords = () => {
 
-    if(filePath !== ""){
+    if (filePath !== "") {
 
-      fileData.append("incidents-file",filePath)
-      
+      fileData.append("incidents-file", filePath)
+
       fetch(FILE_UPLOAD_URL
         , {
-        method: "POST",
-        body: fileData,
-      })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.log(error);
-      });
+          method: "POST",
+          body: fileData,
+        })
+        .then((response) => response.json())
+        .catch((error) => {
+          console.log(error);
+        });
 
       setFileChosen(false)
       setDisplayFileForm(true)
 
-    }else{
+    } else {
       alert("Upload file first")
     }
   }
 
   const filteredRows = rows.filter(row => {
-    // 1. Search Check (Incident or Username)
-    const matchesSearch = 
-      row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.username.toLowerCase().includes(searchTerm.toLowerCase());
+    const term = searchTerm.toLowerCase();
+    const matchesSearch =
+      (row.incidentDescription && row.incidentDescription.toLowerCase().includes(term)) ||
+      (row.channel && row.channel.toLowerCase().includes(term)) ||
+      (row.incident && row.incident.toLowerCase().includes(term));
 
     // 2. Date Check
-    const matchesDate = appliedFilters.date 
-      ? row.dateReported === appliedFilters.date 
+    const matchesDate = appliedFilters.date
+      ? row.dateReported === appliedFilters.date
       : true;
 
     // 3. Status Check
-    const matchesStatus = appliedFilters.status 
-      ? row.status === appliedFilters.status 
+    const matchesStatus = appliedFilters.status
+      ? row.status === appliedFilters.status
       : true;
 
     const matchesIncident = appliedFilters.incident ? row.incident === appliedFilters.incident : true;
@@ -156,7 +160,7 @@ export default function IncidentTelegram() {
           <div className="chat-icon">
             {/* Telegram Logo SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21.68 3.32a2.3 2.3 0 0 0-2.35-.38l-17 6.6a2.3 2.3 0 0 0 .1 4.28l4.9 1.52 1.9 5.7a1.2 1.2 0 0 0 2.2 0l2.3-4.1 6.3 4.6a2.3 2.3 0 0 0 3.7-1.7V4.3a2.3 2.3 0 0 0-.35-1zM6.9 14.6l12.1-8.1-10 9.7z" fill="white"/>
+              <path d="M21.68 3.32a2.3 2.3 0 0 0-2.35-.38l-17 6.6a2.3 2.3 0 0 0 .1 4.28l4.9 1.52 1.9 5.7a1.2 1.2 0 0 0 2.2 0l2.3-4.1 6.3 4.6a2.3 2.3 0 0 0 3.7-1.7V4.3a2.3 2.3 0 0 0-.35-1zM6.9 14.6l12.1-8.1-10 9.7z" fill="white" />
             </svg>
           </div>
         </div>
@@ -186,16 +190,16 @@ export default function IncidentTelegram() {
       <div className="action-bar">
         {/* Left: Filters */}
         <div className="left-actions">
-           {/* Date Filter */}
-           <input 
-            type="date" 
-            className="filter-input" 
+          {/* Date Filter */}
+          <input
+            type="date"
+            className="filter-input"
             value={tempFilterDate}
             onChange={(e) => setTempFilterDate(e.target.value)}
           />
 
           {/* Status Filter */}
-          <select 
+          <select
             className="filter-input"
             value={tempFilterStatus}
             onChange={(e) => setTempFilterStatus(e.target.value)}
@@ -205,9 +209,9 @@ export default function IncidentTelegram() {
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
-        
-         <select className="filter-input" value={tempFilterIncident} onChange={(e) => setTempFilterIncident(e.target.value)}>
-            <option value="">All Incidents</option>
+
+          <select className="filter-input" value={tempFilterIncident} onChange={(e) => setTempFilterIncident(e.target.value)}>
+            <option value="">All Categories</option>
             <option value="Hate Speech">Hate Speech</option>
             <option value="Online Child Exploitation">Online Child Exploitation</option>
             <option value="Publication of False Information">Publication of False Information</option>
@@ -221,6 +225,7 @@ export default function IncidentTelegram() {
             <option value="Wrongful Suspension">Wrongful Suspension</option>
             <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
             <option value="Verification">Verification</option>
+            <option value="Copyright Infringement">Copyright Infringement</option>
           </select>
 
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
@@ -228,13 +233,13 @@ export default function IncidentTelegram() {
 
         {/* Middle: Search */}
         <div className="center-actions">
-           <input 
-              type="text" 
-              placeholder="Search Incident or Username" 
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-           />
+          <input
+            type="text"
+            placeholder="Search Description or Channel"
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
 
         {/* Right: Add Button */}
@@ -249,25 +254,25 @@ export default function IncidentTelegram() {
             {displayFileForm &&
               <>
                 <label htmlFor="telegram-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
-                <input type="file" id="telegram-incidents-file" hidden={true} onChange={()=> {
-                if(document.getElementById("telegram-incidents-file").value !== ""){
-                  setFilePath(event.target.files[0])
-                  setFileChosen(true)
-                  setDisplayFileForm(false)
+                <input type="file" id="telegram-incidents-file" hidden={true} onChange={(event) => {
+                  if (document.getElementById("telegram-incidents-file").value !== "") {
+                    setFilePath(event.target.files[0])
+                    setFileChosen(true)
+                    setDisplayFileForm(false)
+                  }
                 }
-              }
-              }/>
+                } />
               </>
             }
-            
-            
+
+
             {fileChosen &&
               <>
-              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
-                setFileChosen(false)
-                setDisplayFileForm(true)
-              }}/>
-              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+                <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={() => {
+                  setFileChosen(false)
+                  setDisplayFileForm(true)
+                }} />
+                <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
               </>
             }
           </form>
@@ -278,11 +283,11 @@ export default function IncidentTelegram() {
       <div className="table-container">
         <div className="table-header">
           <div className="th-cell col-tg-no">No.</div>
+          <div className="th-cell col-tg-desc">Incident Description</div>
+          <div className="th-cell col-tg-channel">Channel</div>
           <div className="th-cell col-tg-incident">Incident</div>
-          <div className="th-cell col-tg-username">Username</div>
           <div className="th-cell col-tg-date">Date Reported</div>
           <div className="th-cell col-tg-status">Status</div>
-          <div className="th-cell col-tg-incident">Officer</div>
           <div className="th-cell col-tg-action">Action</div>
         </div>
 
@@ -291,19 +296,18 @@ export default function IncidentTelegram() {
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
               <div className="td-cell col-tg-no">{i + 1}</div>
+              <div className="td-cell col-tg-desc">{row.incidentDescription}</div>
+              <div className="td-cell col-tg-channel">{row.channel}</div>
               <div className="td-cell col-tg-incident">{row.incident}</div>
-              <div className="td-cell col-tg-username">{row.username}</div>
               <div className="td-cell col-tg-date">{row.dateReported}</div>
               <div className="td-cell col-tg-status">
-                <span className={`status-badge ${
-                    row.status === "Rejected" ? "status-rejected" : 
+                <span className={`status-badge ${row.status === "Rejected" ? "status-rejected" :
                     row.status === "Pending" ? "status-pending" : "status-resolved"
-                }`}>
+                  }`}>
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-tg-incident">{row.officer}</div>
-              
+
               <div className="td-cell col-tg-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
@@ -338,64 +342,66 @@ export default function IncidentTelegram() {
         <div className="modal-overlay" onClick={() => setIsOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="modal-title">{editingIndex !== null ? "Edit Incident" : "Add New Incident"}</h2>
-            
+
             <div className="modal-form">
 
               <div className="form-group">
-                <label>Username</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.username} 
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })} 
+                <label>Incident Description</label>
+                <input
+                  placeholder="Describe the incident"
+                  value={formData.incidentDescription}
+                  onChange={(e) => setFormData({ ...formData, incidentDescription: e.target.value })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Channel (URL or @handle)</label>
+                <input
+                  placeholder="@username or https://t.me/..."
+                  value={formData.channel}
+                  onChange={(e) => setFormData({ ...formData, channel: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Incident</label>
                 <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
-                  <option value="Impersonation">Impersonation</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
                   <option value="Publication of False Information">Publication of False Information</option>
                   <option value="Account Compromise">Account Compromise</option>
+                  <option value="Impersonation">Impersonation</option>
                   <option value="E-Commerce Fraud">E-Commerce Fraud</option>
                   <option value="Online Sextortion">Online Sextortion</option>
                   <option value="Cyber Harassment">Cyber Harassment</option>
-                  <option value="Online Child Exploitation">Online Child Exploitation</option>
                   <option value="Cyber Terrorism">Cyber Terrorism</option>
                   <option value="Data Breach">Data Breach</option>
-                  <option value="Copyright Infringement">Copyright Infringement</option>
                   <option value="Wrongful Suspension">Wrongful Suspension</option>
-                  <option value="Hate Speech">Hate Speech</option>
+                  <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
+                  <option value="Verification">Verification</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
                 </select>
               </div>
 
               <div className="form-group">
                 <label>Date Reported</label>
-                <input 
-                  type="date" 
-                  value={formData.dateReported} 
-                  onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })} 
+                <input
+                  type="date"
+                  value={formData.dateReported}
+                  onChange={(e) => setFormData({ ...formData, dateReported: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Status</label>
-                <select 
-                  value={formData.status} 
+                <select
+                  value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                 >
                   <option value="Rejected">Rejected</option>
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>
-              </div>
-
-               <div className="form-group">
-                <label>Officer</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.officer} 
-                  onChange={(e) => setFormData({ ...formData, officer: e.target.value })} 
-                />
               </div>
 
               <div className="modal-actions">
