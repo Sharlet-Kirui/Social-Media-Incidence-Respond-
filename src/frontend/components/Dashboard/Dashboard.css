@@ -50,7 +50,7 @@
 .card-value {
   font-family: 'Poppins';
   font-weight: 700;
-  font-size: 24px;
+  font-size: 18px;
   color: #000000;
 }
 
@@ -64,8 +64,7 @@
 .chart-container {
   flex: 1;
   min-width: 400px;
-  /* Reduced height as requested */
-  height: 350px; 
+  height: 300px; 
   display: flex;
   flex-direction: column;
 }
@@ -378,4 +377,148 @@
   .chart-container {
     min-width: 100%;
   }
+}
+
+.scrollable-chart {
+  overflow-y: auto; /* Allows scrolling if list/table is long */
+}
+
+.horizontal-bars-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 10px;
+  padding-top: 10px;
+}
+
+.h-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.h-bar-label {
+  width: 130px; /* Fixed width for text labels */
+  font-size: 11px;
+  color: #374151;
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.h-bar-track {
+  flex: 1;
+  background-color: #F3F4F6;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.h-bar-fill {
+  background-color: #0077b6; /* Main blue theme */
+  height: 100%;
+  border-radius: 4px;
+}
+
+.h-bar-value {
+  width: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* --- NEW: Data Table Styles --- */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Allow horizontal scroll for table */
+  margin-top: 10px;
+}
+
+.incident-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+}
+
+.incident-table th {
+  text-align: left;
+  padding: 8px;
+  background-color: #F9FAFB;
+  color: #6B7280;
+  font-weight: 600;
+  border-bottom: 1px solid #E5E7EB;
+  white-space: nowrap; /* Keep headers on one line */
+}
+
+.incident-table td {
+  padding: 8px;
+  border-bottom: 1px solid #F3F4F6;
+  color: #111827;
+}
+
+.incident-table td.row-header {
+  font-weight: 500;
+  color: #374151;
+  border-right: 1px solid #F3F4F6;
+  background-color: #fff;
+  min-width: 100px;
+}
+
+/* Hover effect for table rows */
+.incident-table tbody tr:hover {
+  background-color: #F9FAFB;
+}
+
+/* Optional: Custom scrollbar for the table/list containers */
+.scrollable-chart::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollable-chart::-webkit-scrollbar-thumb {
+  background: #D1D5DB; 
+  border-radius: 3px;
+}
+
+/* Container for the big number OR the legend */
+.chart-meta-row {
+  min-height: 40px; /* Keeps layout stable when switching */
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+/* The Legend Container */
+.trend-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding-left: 5px;
+}
+
+/* Individual Legend Item */
+.legend-item-small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The Color Dot */
+.legend-dot-small {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* The Text Year */
+.legend-text-small {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #4B5563;
+  font-weight: 500;
 }
