@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
+import { DataGrid } from "@mui/x-data-grid";
+import { Paper } from "@mui/material";
 
 const emptyForm = {
   accountName: "",
@@ -133,6 +135,25 @@ export default function IncidentX() {
     return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
+  const columns = [
+    {field:"accountName",headerName:"Account Name",width:300},
+    {field:"url",headerName:"URL",width:250},
+    {field:"dateReported",headerName:"Date Reported",width:200},
+    {field:"incident",headerName:"Incident",width:300},
+    {field:"officer", headerName:"Officer",width:200},
+    {field:"status",headerName:"Status",width:200,cellClassName:(params)=>{
+      if(params.value == "Pending"){
+        return "status-badge status-pending"
+      }else if(params.value == "Resolved"){
+        return "status-badge status-resolved"
+      }else if(params.value == "Rejected"){
+        return "status-badge status-rejected"
+      }
+    }}
+  ]
+
+  const paginationModel = { page: 0, pageSize: 10 };
+
   return (
     <div className="page-container">
       {/* 1. Header Section */}
@@ -226,51 +247,18 @@ export default function IncidentX() {
         </div>
       </div>
 
-      {/* 4. Table Section */}
-      <div className="table-container">
-        <div className="table-header">
-          <div className="th-cell col-ix-no">No.</div>
-          <div className="th-cell col-ix-name">Account Name</div>
-          <div className="th-cell col-ix-url">URL</div>
-          <div className="th-cell col-ix-date">Date Reported</div>
-          <div className="th-cell col-ix-platform">Incident</div>
-          <div className="th-cell col-ix-status">Status</div>
-          <div className="th-cell col-ix-officer">Officer</div>
-          <div className="th-cell col-ix-action">Action</div>
-        </div>
+      <Paper>
 
-        {filteredRows.length > 0 ? (
-          filteredRows.map((row, i) => (
-            <div key={i} className="table-row">
-              <div className="td-cell col-ix-no">{i + 1}</div>
-              <div className="td-cell col-ix-name">{row.accountName}</div>
-              <div className="td-cell col-ix-url">{row.url}</div>
-              <div className="td-cell col-ix-date">{row.dateReported}</div>
-              <div className="td-cell col-ix-incident">{row.incident}</div>
-              <div className="td-cell col-ix-status">
-                <span className={`status-badge ${row.status === "Rejected" ? "status-rejected" : row.status === "Pending" ? "status-pending" : "status-resolved"}`}>
-                  {row.status}
-                </span>
-              </div>
-              <div className="td-cell col-ix-officer">{row.officer}</div>
-              <div className="td-cell col-ix-action relative">
-                <div className="action-btn-group">
-                  <button onClick={() => openEdit(i)} className="icon-btn"><Edit2 size={16} /></button>
-                  <button onClick={() => setMenuIndex(menuIndex === i ? null : i)} className="icon-btn"><MoreHorizontal size={16} /></button>
-                </div>
-                {menuIndex === i && (
-                  <div className="dropdown-menu">
-                    <button onClick={() => handleDuplicate(i)} className="dropdown-item"><Copy size={14} /> Duplicate</button>
-                    <button onClick={() => handleDelete(i)} className="dropdown-item danger"><Trash size={14} /> Delete</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="table-body-empty">No records found</div>
-        )}
-      </div>
+        <DataGrid
+        columns={columns}
+        rows={filteredRows}
+        initialState={{pagination:paginationModel}}
+        pageSizeOptions={[10,20,30]}
+        getRowId={(row) => row._id}
+        />
+      </Paper>
+
+      
 
       {/* --- POP-UP MODAL --- */}
       {isOpen && (

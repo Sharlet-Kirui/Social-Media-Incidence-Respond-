@@ -310,9 +310,8 @@
 /* Status Badges */
 .status-badge {
   padding: 4px 10px; /* Slightly tighter padding */
-  border-radius: 10px;
-  font-size: 11px; /* Reduced from 12px */
-  font-weight: 600;
+  /* border-radius: 10px; */
+  font-weight: bold;
 }
 .status-rejected { background: #fee2e2; color: #dc2626; }
 .status-pending { background: #fef9c3; color: #ca8a04; }
