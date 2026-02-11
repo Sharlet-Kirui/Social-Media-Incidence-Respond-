@@ -140,6 +140,10 @@ const Dashboard = () => {
           <h3>Top Category</h3>
           <div className="card-value">Hate Speech</div>
         </div>
+        <div className="dash-card top-card">
+          <h3>Online Child Exploitation</h3>
+          <div className="card-value">50</div>
+        </div>
       </div>
 
       {/* --- ROW 1 --- */}
