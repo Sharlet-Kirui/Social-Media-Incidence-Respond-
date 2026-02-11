@@ -165,6 +165,8 @@ export default function IncidentTelegram() {
         return "status-badge status-pending"
       }else if(params.value == "Resolved"){
         return "status-badge status-resolved"
+      }else if(params.value == "Rejected"){
+        return "status-badge status-rejected"
       }
     }},
     {headerName:"Actions"}

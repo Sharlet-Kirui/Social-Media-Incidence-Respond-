@@ -1,6 +1,8 @@
 import React, { useEffect,useState } from 'react';
 import { Plus, Edit2, MoreHorizontal, Trash } from "lucide-react";
 import '../global.css';
+import { DataGrid } from "@mui/x-data-grid";
+import { Paper } from "@mui/material";
 
 const emptyForm = {
   mobileNumber: "",
@@ -140,6 +142,25 @@ const IncidentWhatsApp = () => {
     return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
+  const columns = [
+    {field:"mobileNumber",headerName:"Mobile Number",width:200},
+    {field:"dateReported",headerName:"Date Reported",width:200},
+    {field:"incident",headerName:"Incident",width:400},
+    {field:"officer",headerName:"Officer",width:200},
+    {field:"status",headerName:"Status",width:200,cellClassName:(params)=>{
+      if(params.value == "Pending"){
+        return "status-badge status-pending"
+      }else if(params.value == "Resolved"){
+        return "status-badge status-resolved"
+      }else if(params.value == "Rejected"){
+        return "status-badge status-rejected"
+      }
+    }},
+    {headerName:"Actions"}
+  ]
+
+  const paginationModel = { page: 0, pageSize: 10 };
+
   return (
     <div className="page-container">
       {/* 1. Header Section */}
@@ -266,7 +287,17 @@ const IncidentWhatsApp = () => {
       </div>
 
       {/* 4. Table Section */}
-      <div className="table-container">
+      <Paper>
+        <DataGrid
+          columns={columns}
+          rows={filteredRows}
+          initialState={{pagination:paginationModel}}
+          pageSizeOptions={[10,20,30]}
+          getRowId={(row) => row._id}
+        />
+      </Paper>
+
+      {/* <div className="table-container">
         <div className="table-header">
           <div className="th-cell col-wa-no">No</div>
           <div className="th-cell col-wa-mobile">Mobile Number</div>
@@ -277,7 +308,6 @@ const IncidentWhatsApp = () => {
           <div className="th-cell col-wa-action">Action</div>
         </div>
         
-        {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
@@ -305,7 +335,7 @@ const IncidentWhatsApp = () => {
                   </button>
                 </div>
 
-                {/* Dropdown Menu */}
+    
                 {menuIndex === i && (
                   <div className="dropdown-menu">
                     <button onClick={() => handleDelete(i)} className="dropdown-item danger">
@@ -319,7 +349,7 @@ const IncidentWhatsApp = () => {
         ) : (
           <div className="table-body-empty">No incidents found.</div>
         )}
-      </div>
+      </div> */}
 
       {/* --- POP-UP MODAL START --- */}
       {isModalOpen && (

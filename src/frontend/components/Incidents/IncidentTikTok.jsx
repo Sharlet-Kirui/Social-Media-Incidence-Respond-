@@ -1,6 +1,8 @@
 import React, { useEffect,useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
 import '../global.css';
+import { DataGrid } from "@mui/x-data-grid";
+import { Paper } from "@mui/material";
 
 const emptyForm = {
   incident: "",
@@ -130,6 +132,26 @@ export default function IncidentTikTok() {
     return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
+  const columns = [
+    {field:"url",headerName:"URL",width:200},
+    {field:"dateReported",headerName:"Date Reported",width:200},
+    {field:"incident",headerName:"Incident",width:400},
+    {field:"officer",headerName:"Officer",width:200},
+    {field:"status",headerName:"Status",width:200,cellClassName:(params)=>{
+      if(params.value == "Pending"){
+        return "status-badge status-pending"
+      }else if(params.value == "Resolved"){
+        return "status-badge status-resolved"
+      }else if(params.value == "Rejected"){
+        return "status-badge status-rejected"
+      }
+    }},
+    {headerName:"Actions"}
+  ]
+
+  const paginationModel = { page: 0, pageSize: 10 };
+
+
   return (
     <div className="page-container">
       {/* 1. Header Section */}
@@ -226,7 +248,17 @@ export default function IncidentTikTok() {
       </div>
 
       {/* 4. Table Section */}
-      <div className="table-container">
+
+      <Paper>
+        <DataGrid
+          columns={columns}
+          rows={filteredRows}
+          initialState={{pagination:paginationModel}}
+          pageSizeOptions={[10,20,30]}
+          getRowId={(row) => row._id}
+        />
+      </Paper>
+      {/* <div className="table-container">
         <div className="table-header">
           <div className="th-cell col-tiktok-no">No.</div>
           <div className="th-cell col-tiktok-incident">Incident</div>
@@ -267,7 +299,7 @@ export default function IncidentTikTok() {
         ) : (
           <div className="table-body-empty">No records found</div>
         )}
-      </div>
+      </div> */}
 
       {/* --- POP-UP MODAL --- */}
       {isOpen && (
