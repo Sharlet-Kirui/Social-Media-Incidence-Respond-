@@ -7,7 +7,7 @@ const emptyForm = {
   platform: "X (Twitter)",
   url: "",
   dateReported: "",
-  status: "Active",
+  status: "Rejected",
   officer: "",
 };
 
@@ -25,14 +25,14 @@ export default function XVerifications() {
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
 
-  // 2. Active State (What is actually applied to the table)
+  // 2. Rejected State (What is actually applied to the table)
   const [appliedFilters, setAppliedFilters] = useState({
     date: "",
     status: ""
   });
 
   // Calculate Stats
-  const activeCount = rows.filter(r => r.status === "Active").length;
+  const rejectedCount = rows.filter(r => r.status === "Rejected").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
 
@@ -123,8 +123,8 @@ export default function XVerifications() {
       {/* 2. Stats Cards Section */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3>
-          <span className="stat-number">{activeCount}</span>
+          <h3>Rejected</h3>
+          <span className="stat-number">{rejectedCount}</span>
         </div>
         <div className="stat-card">
           <h3>Pending</h3>
@@ -156,7 +156,7 @@ export default function XVerifications() {
             onChange={(e) => setTempFilterStatus(e.target.value)}
           >
             <option value="">All Statuses</option>
-            <option value="Active">Active</option>
+            <option value="Rejected">Rejected</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
           </select>
@@ -209,7 +209,7 @@ export default function XVerifications() {
               <div className="td-cell col-xv-date">{row.dateReported}</div>
               <div className="td-cell col-xv-status">
                 <span className={`status-badge ${
-                    row.status === "Active" ? "status-active" : 
+                    row.status === "Rejected" ? "status-rejected" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
                 }`}>
                   {row.status}
@@ -304,7 +304,7 @@ export default function XVerifications() {
                   value={formData.status} 
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                 >
-                  <option value="Active">Active</option>
+                  <option value="Rejected">Rejected</option>
                   <option value="Pending">Pending</option>
                   <option value="Resolved">Resolved</option>
                 </select>

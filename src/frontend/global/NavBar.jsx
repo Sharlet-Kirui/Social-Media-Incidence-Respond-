@@ -3,11 +3,9 @@ import { NavLink } from "react-router-dom"; // Using NavLink for active styling
 import "./NavBar.css";
 import { User, Settings, LogOut, LockKeyhole } from "lucide-react";
 
-// import CompromisedAccounts from './frontend/components/CompromisedAccounts';
-
 const Navbar = () => {
   return (
-    <nav className="navbar"> f
+    <nav className="navbar"> 
       {/* Brand / Logo */}
       <div className="navbar-logo">MyApp</div>
 
@@ -30,7 +28,7 @@ const Navbar = () => {
         <li className="nav-item">
           {/* Note: You can make the main label a link or just a span */}
           <NavLink to="/incidence/X" className="nav-link">
-            Incidence{" "}
+            Incidents{" "}
             <span style={{ fontSize: "10px", marginLeft: "5px" }}>▼</span>
           </NavLink>
 
@@ -89,17 +87,6 @@ const Navbar = () => {
           </ul>
         </li>
 
-        <li className="nav-item">
-          <NavLink to="/CompromisedAccounts" className="nav-link">
-            Compromised Accounts
-          </NavLink>
-        </li>
-
-        <li className="nav-item">
-          <NavLink to="/governmentOfficials" className="nav-link">
-            Government Officials
-          </NavLink>
-        </li>
         <li className="nav-item">
           <NavLink to="/Profile" className="nav-link">
             <User size={18} style={{ marginRight: "6px" }} />

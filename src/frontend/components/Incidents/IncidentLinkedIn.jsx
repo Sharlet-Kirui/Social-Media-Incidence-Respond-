@@ -1,51 +1,53 @@
-import React, { useState,useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { Plus, Edit2, MoreHorizontal, Trash, Copy } from "lucide-react";
-import './global.css';
+import '../global.css';
 
 const emptyForm = {
-  accountNo: "",
-  accountName: "",
-  platform: "",
-  compromisedAccount: "",
+  accountName: "", // Maps to Account Name / Description
+  url: "",
   dateReported: "",
-  incident: "",
-  status: "",
-  officerResponsible: "",
-  referenceNumber: "",
-  
+  status: "Pending",
+  officer: "",
+  incident:"",
 };
 
-export default function CompromisedAccounts() {
-
-  const COMPROMISED_ACCOUNTS_URL = "http://localhost:4000/compromised_accounts"
-
+export default function IncidentLinkedIn() {
   const [rows, setRows] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingIndex, setEditingIndex] = useState(null);
   const [menuIndex, setMenuIndex] = useState(null);
-
-   useEffect(() => {
-      fetch(COMPROMISED_ACCOUNTS_URL  )
-        .then((response) => response.json())
-        .then((compromised_accounts) => setRows(compromised_accounts))
-        .catch((error) => {
-          console.log(error);
-        });
-      }, []);
+  const [fileChosen,setFileChosen] = useState(false)
+  const [displayFileForm,setDisplayFileForm] = useState(true)
+  const [filePath,setFilePath] = useState("")
+  const fileData = new FormData()
   
   // --- Search & Filter States ---
   const [searchTerm, setSearchTerm] = useState("");
   const [tempFilterDate, setTempFilterDate] = useState("");
   const [tempFilterStatus, setTempFilterStatus] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "" });
+  const [tempFilterIncident, setTempFilterIncident] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState({ date: "", status: "", incident:""});
 
   // Calculate Stats
-  const activeCount = rows.filter(r => r.status === "Active").length;
   const pendingCount = rows.filter(r => r.status === "Pending").length;
   const resolvedCount = rows.filter(r => r.status === "Resolved").length;
+  const rejectedCount = rows.filter(r => r.status === "Rejected").length;
+
+  const LINKEDIN_INCIDENTS_URL = "http://localhost:4000/linkedin-incidents/"
+  const FILE_UPLOAD_URL = "http://localhost:4000/linkedin-incidents/upload-file"
+
+  useEffect(() => {
+    fetch(LINKEDIN_INCIDENTS_URL)
+    .then((response) => response.json())
+    .then((incidents) => setRows(incidents))
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
 
   // --- Handlers ---
+
   const openCreate = () => {
     setFormData(emptyForm);
     setEditingIndex(null);
@@ -65,7 +67,7 @@ export default function CompromisedAccounts() {
       updated[editingIndex] = formData;
       setRows(updated);
     } else {
-      fetch(COMPROMISED_ACCOUNTS_URL
+      fetch(LINKEDIN_INCIDENTS_URL
         , {
         method: "POST",
         headers: {
@@ -97,24 +99,54 @@ export default function CompromisedAccounts() {
   const handleApplyFilters = () => {
     setAppliedFilters({
       date: tempFilterDate,
-      status: tempFilterStatus
+      status: tempFilterStatus,
+      incident:tempFilterIncident
     });
   };
 
+  const addRecords = () => {
+
+    if(filePath !== ""){
+
+      fileData.append("incidents-file",filePath)
+      
+      fetch(FILE_UPLOAD_URL
+        , {
+        method: "POST",
+        body: fileData,
+      })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.log(error);
+      });
+
+      setFileChosen(false)
+      setDisplayFileForm(true)
+
+    }else{
+      alert("Upload file first")
+    }
+  }
+
   const filteredRows = rows.filter(row => {
+    // 1. Search Check (Name or URL)
     const matchesSearch = 
       row.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.platform.toLowerCase().includes(searchTerm.toLowerCase());
-      
+      row.url.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // 2. Date Check
     const matchesDate = appliedFilters.date 
       ? row.dateReported === appliedFilters.date 
       : true;
 
+    // 3. Status Check
     const matchesStatus = appliedFilters.status 
       ? row.status === appliedFilters.status 
       : true;
 
-    return matchesSearch && matchesDate && matchesStatus;
+    const matchesIncident = appliedFilters.incident ? row.incident === appliedFilters.incident : true;
+
+    return matchesSearch && matchesDate && matchesStatus && matchesIncident;
   });
 
   return (
@@ -123,14 +155,14 @@ export default function CompromisedAccounts() {
       <div className="header-section">
         <div className="icon-wrapper">
           <div className="chat-icon">
+            {/* LinkedIn Logo SVG */}
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L3 7V13C3 18.52 6.84 23.74 12 25C17.16 23.74 21 18.52 21 13V7L12 2ZM12 13H17V17H12V13Z" fill="white"/>
-              <path d="M12 2L3 7V13C3 18.52 6.84 23.74 12 25C17.16 23.74 21 18.52 21 13V7L12 2ZM11 7H13V13H11V7ZM11 15H13V17H11V15Z" fill="white"/>
+              <path d="M19 3H5C3.895 3 3 3.895 3 5V19C3 20.105 3.895 21 5 21H19C20.105 21 21 20.105 21 19V5C21 3.895 20.105 3 19 3ZM8.5 19H5.5V9H8.5V19ZM7 7.69C6.17 7.69 5.5 7.02 5.5 6.19C5.5 5.36 6.17 4.69 7 4.69C7.83 4.69 8.5 5.36 8.5 6.19C8.5 7.02 7.83 7.69 7 7.69ZM18.5 19H15.5V14.5C15.5 13.12 14.38 12 13 12C11.62 12 10.5 13.12 10.5 14.5V19H7.5V9H10.5V10.3C11.16 9.38 12.38 8.8 13.5 8.8C16.26 8.8 18.5 11.04 18.5 13.8V19Z" fill="white"/>
             </svg>
           </div>
         </div>
         <div className="header-text">
-          <h1>Compromised Accounts</h1>
+          <h1>LinkedIn Incidents</h1>
           <p>{rows.length} records found</p>
         </div>
       </div>
@@ -138,16 +170,16 @@ export default function CompromisedAccounts() {
       {/* 2. Stats Cards Section */}
       <div className="stats-container">
         <div className="stat-card">
-          <h3>Active</h3>
-          <span className="stat-number">{activeCount}</span>
-        </div>
-        <div className="stat-card">
           <h3>Pending</h3>
           <span className="stat-number">{pendingCount}</span>
         </div>
         <div className="stat-card">
           <h3>Resolved</h3>
           <span className="stat-number">{resolvedCount}</span>
+        </div>
+        <div className="stat-card">
+          <h3>Rejected</h3>
+          <span className="stat-number">{rejectedCount}</span>
         </div>
       </div>
 
@@ -170,10 +202,28 @@ export default function CompromisedAccounts() {
             onChange={(e) => setTempFilterStatus(e.target.value)}
           >
             <option value="">All Statuses</option>
-            <option value="Active">Active</option>
             <option value="Pending">Pending</option>
             <option value="Resolved">Resolved</option>
+            <option value="Rejected">Rejected</option>
           </select>
+
+          <select className="filter-input" value={tempFilterIncident} onChange={(e) => setTempFilterIncident(e.target.value)}>
+            <option value="">All Incidents</option>
+            <option value="Hate Speech">Hate Speech</option>
+            <option value="Online Child Exploitation">Online Child Exploitation</option>
+            <option value="Publication of False Information">Publication of False Information</option>
+            <option value="Account Compromise">Account Compromise</option>
+            <option value="Impersonation">Impersonation</option>
+            <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+            <option value="Online Sextortion">Online Sextortion</option>
+            <option value="Cyber Harassment">Cyber Harassment</option>
+            <option value="Cyber Terrorism">Cyber Terrorism</option>
+            <option value="Data Breach">Data Breach</option>
+            <option value="Wrongful Suspension">Wrongful Suspension</option>
+            <option value="Wrongful Distribution of Obscene Images">Wrongful Distribution of Obscene Images</option>
+            <option value="Verification">Verification</option>
+          </select>
+
           
           <button className="btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
         </div>
@@ -182,7 +232,7 @@ export default function CompromisedAccounts() {
         <div className="center-actions">
            <input 
               type="text" 
-              placeholder="Search Account or Platform" 
+              placeholder="Search Name or URL" 
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -195,44 +245,70 @@ export default function CompromisedAccounts() {
             <Plus size={18} /> Add New
           </button>
         </div>
+
+        <div className="right-actions">
+          <form>
+            {displayFileForm &&
+              <>
+               <label htmlFor="linkedin-incidents-file" className="btn-primary"><Plus size={18} />Upload from Excel</label>
+               <input type="file" id="linkedin-incidents-file" hidden={true} onChange={()=> {
+                if(document.getElementById("linkedin-incidents-file").value !== ""){
+                  setFilePath(event.target.files[0])
+                  setFileChosen(true)
+                  setDisplayFileForm(false)
+                }
+              }
+              }/>
+              </>
+            }
+            
+            
+            {fileChosen &&
+              <>
+              <input type="reset" value={"Drop " + filePath.name} className="btn-drop-file" onClick={()=>{
+                setFileChosen(false)
+                setDisplayFileForm(true)
+              }}/>
+              <button type="button" className="btn-submit-file" onClick={addRecords}> Add Records </button>
+              </>
+            }
+          </form>
+        </div>
       </div>
 
       {/* 4. Table Section */}
       <div className="table-container">
         <div className="table-header">
-          <div className="th-cell col-ca-no">No.</div>
-          <div className="th-cell col-ca-name">Account Name</div>
-          <div className="th-cell col-ca-platform">Platform</div>
-          <div className="th-cell col-ca-date">Compromised Account</div>
-          <div className="th-cell col-ca-date">Date Reported</div>
-          <div className="th-cell col-ca-status">Incident</div>
-          <div className="th-cell col-ca-officer">Status</div>
-          <div className="th-cell col-ca-name">Officer Responsible</div>
-          <div className="th-cell col-ca-name">Reference Number</div>
+          <div className="th-cell col-li-no">No.</div>
+          <div className="th-cell col-li-name">Account Name / Description</div>
+          <div className="th-cell col-li-name">Incident</div>
+          <div className="th-cell col-li-url">URL</div>
+          <div className="th-cell col-li-date">Date Reported</div>
+          <div className="th-cell col-li-status">Status</div>
+          <div className="th-cell col-li-officer">Officer Responsible</div>
+          <div className="th-cell col-li-action">Action</div>
         </div>
 
         {/* Table Body */}
         {filteredRows.length > 0 ? (
           filteredRows.map((row, i) => (
             <div key={i} className="table-row">
-              <div className="td-cell col-ca-no">{i + 1}</div>
-              <div className="td-cell col-ca-name">{row.accountName}</div>
-              <div className="td-cell col-ca-platform">{row.platform}</div>
-              <div className="td-cell col-ca-date">{row.compromisedAccount}</div>
-              <div className="td-cell col-ca-url">{row.dateReported}</div>
-              <div className="td-cell col-ca-name">{row.incident}</div>
-              <div className="td-cell col-ca-status">
+              <div className="td-cell col-li-no">{i + 1}</div>
+              <div className="td-cell col-li-name">{row.accountName}</div>
+              <div className="td-cell col-li-name">{row.incident}</div>
+              <div className="td-cell col-li-url">{row.url}</div>
+              <div className="td-cell col-li-date">{row.dateReported}</div>
+              <div className="td-cell col-li-status">
                 <span className={`status-badge ${
-                    row.status === "Active" ? "status-active" : 
+                    row.status === "Rejected" ? "status-rejected" : 
                     row.status === "Pending" ? "status-pending" : "status-resolved"
                 }`}>
                   {row.status}
                 </span>
               </div>
-              <div className="td-cell col-ca-officer">{row.officer}</div>
-              <div className="td-cell col-ca-url">{row.referenceNumber}</div>
+              <div className="td-cell col-li-officer">{row.officer}</div>
               
-              <div className="td-cell col-ca-action relative">
+              <div className="td-cell col-li-action relative">
                 <div className="action-btn-group">
                   <button onClick={() => openEdit(i)} className="icon-btn">
                     <Edit2 size={16} />
@@ -269,7 +345,7 @@ export default function CompromisedAccounts() {
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Account Name</label>
+                <label>Account Name / Description</label>
                 <input 
                   placeholder="Value" 
                   value={formData.accountName} 
@@ -278,21 +354,30 @@ export default function CompromisedAccounts() {
               </div>
 
               <div className="form-group">
-                <label>Platform</label>
+                <label>URL</label>
                 <input 
                   placeholder="Value" 
-                  value={formData.platform} 
-                  onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
+                  value={formData.url} 
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
                 />
               </div>
 
               <div className="form-group">
-                <label>Compromised Accounts</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.compromisedAccount} 
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })} 
-                />
+                <label>Incident</label>
+                <select value={formData.incident} onChange={(e) => setFormData({ ...formData, incident: e.target.value })}>
+                  <option value="Impersonation">Impersonation</option>
+                  <option value="Publication of False Information">Publication of False Information</option>
+                  <option value="Account Compromise">Account Compromise</option>
+                  <option value="E-Commerce Fraud">E-Commerce Fraud</option>
+                  <option value="Online Sextortion">Online Sextortion</option>
+                  <option value="Cyber Harassment">Cyber Harassment</option>
+                  <option value="Online Child Exploitation">Online Child Exploitation</option>
+                  <option value="Cyber Terrorism">Cyber Terrorism</option>
+                  <option value="Data Breach">Data Breach</option>
+                  <option value="Copyright Infringement">Copyright Infringement</option>
+                  <option value="Wrongful Suspension">Wrongful Suspension</option>
+                  <option value="Hate Speech">Hate Speech</option>
+                </select>
               </div>
 
               <div className="form-group">
@@ -305,27 +390,6 @@ export default function CompromisedAccounts() {
               </div>
 
               <div className="form-group">
-                <label>Incident</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.incident} 
-                  onChange={(e) => setFormData({ ...formData, incident: e.target.value })} 
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select 
-                  value={formData.status} 
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Resolved">Resolved</option>
-                </select>
-              </div>
-
-              <div className="form-group">
                 <label>Officer Responsible</label>
                 <input 
                   placeholder="Value" 
@@ -335,12 +399,15 @@ export default function CompromisedAccounts() {
               </div>
 
               <div className="form-group">
-                <label>Reference Number</label>
-                <input 
-                  placeholder="Value" 
-                  value={formData.referenceNumber} 
-                  onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })} 
-                />
+                <label>Status</label>
+                <select 
+                  value={formData.status} 
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
               </div>
 
               <div className="modal-actions">
