@@ -10,15 +10,12 @@ import NavBar from './frontend/global/NavBar';
 import IncidentWhatsApp from './frontend/components/Incidents/IncidentWhatsApp';
 import LinkedInIncidents from './frontend/components/Incidents/IncidentLinkedIn';
 import Profile from './frontend/global/Profile';
-import Verifications from './frontend/components/Verifications/xverifications';
-import Metaverifications from './frontend/components/Verifications/Metaverifications';
 import IncidentX from './frontend/components/Incidents/IncidentX';
 import IncidentTelegram from './frontend/components/Incidents/IncidentTelegram';
 import IncidentTikTok from './frontend/components/Incidents/IncidentTikTok';
 import IncidentMeta from './frontend/components/Incidents/IncidentMeta';
 import SignIn from './frontend/global/SignIn';
 import SignUp from './frontend/global/SIgnUp';
-import LatestResponded from './frontend/components/LatestResponded/LatestResponded';
 import Dashboard from './frontend/components/Dashboard/Dashboard';
 
 
@@ -38,11 +35,6 @@ function App() {
           <Route path="/incidence/tiktok" element={<IncidentTikTok />} />
           <Route path="/incidence/whatsapp" element={<IncidentWhatsApp />} />
           <Route path="/incidence/linkedIn" element={<LinkedInIncidents/>} />
-
-          <Route path="/verification/meta" element={<Metaverifications/>} />
-          <Route path="/verification/X" element={<Verifications/>} />
-
-          <Route path="/latestResponded" element={<LatestResponded/>} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/SignIn" element={<SignIn />} />

@@ -5,6 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Paper } from "@mui/material";
 
 const emptyForm = {
+  description: "",
   incident: "",
   url: "",
   dateReported: "",
@@ -125,7 +126,8 @@ export default function IncidentTikTok() {
   const filteredRows = rows.filter(row => {
     const matchesSearch = 
       row.incident.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.url.toLowerCase().includes(searchTerm.toLowerCase());
+      row.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (row.description && row.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesDate = appliedFilters.date ? row.dateReported === appliedFilters.date : true;
     const matchesStatus = appliedFilters.status ? row.status === appliedFilters.status : true;
     const matchesIncident = appliedFilters.incident ? row.incident === appliedFilters.incident : true;
@@ -133,8 +135,9 @@ export default function IncidentTikTok() {
   });
 
   const columns = [
+    {field:"description",headerName:"Incident Description",width:300},
     {field:"url",headerName:"URL",width:200},
-    {field:"dateReported",headerName:"Date Reported",width:200},
+    {field:"dateReported",headerName:"Date Reported",width:150},
     {field:"incident",headerName:"Incident",width:400},
     {field:"officer",headerName:"Officer",width:200},
     {field:"status",headerName:"Status",width:200,cellClassName:(params)=>{
@@ -307,6 +310,16 @@ export default function IncidentTikTok() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="modal-title">{editingIndex !== null ? "Edit Record" : "Add New Incident"}</h2>
             <div className="modal-form">
+              <div className="form-group">
+                <label>Incident Description</label>
+                <textarea 
+                  rows="3"
+                  style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} 
+                  placeholder="Enter incident details..." 
+                  value={formData.description} 
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
+                />
+              </div>
               <div className="form-group">
                 <label>URL</label>
                 <input placeholder="Value" value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} />
