@@ -18,12 +18,6 @@ const Navbar = () => {
           </NavLink>
         </li>
 
-        <li className="nav-item">
-          <NavLink to="/latestResponded" className="nav-link">
-            Latest Responded
-          </NavLink>
-        </li>
-
         {/* Incidence Link with Dropdown */}
         <li className="nav-item">
           {/* Note: You can make the main label a link or just a span */}
@@ -61,27 +55,6 @@ const Navbar = () => {
             <li>
               <NavLink to="/incidence/linkedIn" className="dropdown-link">
                 LinkedIn
-              </NavLink>
-            </li>
-          </ul>
-        </li>
-
-        {/* Verification Link with Dropdown */}
-        <li className="nav-item">
-          <NavLink to="/verification/X" className="nav-link">
-            Verification{" "}
-            <span style={{ fontSize: "10px", marginLeft: "5px" }}>▼</span>
-          </NavLink>
-
-          <ul className="dropdown-menu">
-            <li>
-              <NavLink to="/verification/X" className="dropdown-link">
-                X
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/verification/meta" className="dropdown-link">
-                Meta
               </NavLink>
             </li>
           </ul>

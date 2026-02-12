@@ -10,8 +10,6 @@ import NavBar from './frontend/global/NavBar';
 import IncidentWhatsApp from './frontend/components/Incidents/IncidentWhatsApp';
 import LinkedInIncidents from './frontend/components/Incidents/IncidentLinkedIn';
 import Profile from './frontend/global/Profile';
-import Verifications from './frontend/components/Verifications/xverifications';
-import Metaverifications from './frontend/components/Verifications/Metaverifications';
 import IncidentX from './frontend/components/Incidents/IncidentX';
 import IncidentTelegram from './frontend/components/Incidents/IncidentTelegram';
 import IncidentTikTok from './frontend/components/Incidents/IncidentTikTok';
@@ -37,9 +35,6 @@ function App() {
           <Route path="/incidence/tiktok" element={<IncidentTikTok />} />
           <Route path="/incidence/whatsapp" element={<IncidentWhatsApp />} />
           <Route path="/incidence/linkedIn" element={<LinkedInIncidents/>} />
-
-          <Route path="/verification/meta" element={<Metaverifications/>} />
-          <Route path="/verification/X" element={<Verifications/>} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/SignIn" element={<SignIn />} />
