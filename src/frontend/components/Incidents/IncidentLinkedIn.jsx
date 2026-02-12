@@ -166,7 +166,14 @@ export default function IncidentLinkedIn() {
         return "status-badge status-rejected"
       }
     }},
-    {headerName:"Actions"}
+    {field: "actions", 
+      headerName: "Actions", 
+      width: 100,
+      renderCell: (params) => {
+         // You likely want your edit/delete buttons here. 
+         // If you had custom rendering logic for actions, put it here.
+         // Otherwise, this empty renderCell prevents it from showing "undefined"
+         return null;}}
   ]
 
   const paginationModel = { page: 0, pageSize: 10 };
@@ -306,7 +313,7 @@ export default function IncidentLinkedIn() {
         columns={columns}
         rows={filteredRows}
         initialState={{pagination:paginationModel}}
-        pageSizeOptions={[10,20,30]}
+        pageSizeOptions={[10,20,30, 100]}
         getRowId={(row) => row._id}
               />
       </Paper>
