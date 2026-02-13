@@ -143,7 +143,41 @@ const IncidentWhatsApp = () => {
   });
 
   const columns = [
-    {field:"mobileNumber",headerName:"Mobile Number",width:200},
+    {field:"mobileNumber",headerName:"Link / Mobile Number",width:250,renderCell: (params) => {
+        const cellValue = params.value ? params.value.toString() : "";
+
+        // Check if the value looks like a URL
+        const isLink = 
+          cellValue.includes("http") || 
+          cellValue.includes("https") || 
+          cellValue.includes("whatsapp.com") || 
+          cellValue.includes("wa.me");
+
+        if (isLink) {
+          // Ensure the href starts with http/https so the browser opens it correctly
+          const href = cellValue.startsWith("http") ? cellValue : `https://${cellValue}`;
+
+          return (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ 
+                color: "#1976d2", 
+                textDecoration: "underline",
+                cursor: "pointer"
+              }}
+              onClick={(e) => e.stopPropagation()} // Prevent the row from being selected when clicking the link
+            >
+              {cellValue}
+            </a>
+          );
+        }
+
+        // If not a link, just return the number as plain text
+        return cellValue;
+      },
+    },
     {field:"dateReported",headerName:"Date Reported",width:200},
     {field:"incident",headerName:"Incident",width:400},
     {field:"officer",headerName:"Officer",width:200},
@@ -156,7 +190,15 @@ const IncidentWhatsApp = () => {
         return "status-badge status-rejected"
       }
     }},
-    {headerName:"Actions"}
+    { field: "actions", 
+      headerName: "Actions", 
+      width: 100,
+      renderCell: (params) => {
+         // You likely want your edit/delete buttons here. 
+         // If you had custom rendering logic for actions, put it here.
+         // Otherwise, this empty renderCell prevents it from showing "undefined"
+         return null;}
+      }
   ]
 
   const paginationModel = { page: 0, pageSize: 10 };
@@ -292,7 +334,7 @@ const IncidentWhatsApp = () => {
           columns={columns}
           rows={filteredRows}
           initialState={{pagination:paginationModel}}
-          pageSizeOptions={[10,20,30]}
+          pageSizeOptions={[10,20,30, 100]}
           getRowId={(row) => row._id}
         />
       </Paper>
@@ -361,10 +403,10 @@ const IncidentWhatsApp = () => {
             
             <div className="modal-form">
               <div className="form-group">
-                <label>Mobile Number</label>
+                <label>Link / Mobile Number</label> 
                 <input 
                   type="text" 
-                  placeholder="Value" 
+                  placeholder="Enter Mobile Number or WhatsApp Link" 
                   value={formData.mobileNumber}
                   onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
                 />
