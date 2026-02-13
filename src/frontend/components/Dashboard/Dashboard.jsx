@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [platformData, setPlatformData] = useState([]); // Vertical Bars
   const [lineDataByYear, setLineDataByYear] = useState({}); // Line Chart
+  const [matrixData, setMatrixData] = useState([]);
   
   const [totalIncidents, setTotalIncidents] = useState(0);
   const [topCategory, setTopCategory] = useState("Loading...");
@@ -80,8 +81,11 @@ const Dashboard = () => {
         };
         setLineDataByYear(mergedTimeline);
 
+        const matrixRes = await axios.get('http://localhost:4000/all-incidents/matrix');
+        setMatrixData(matrixRes.data);
+
         // D. CALCULATE STATS CARDS
-        const total = coloredCats.reduce((acc, curr) => acc + curr.value, 0);
+        const total = platRes.data.reduce((acc, curr) => acc + curr.value, 0);
         setTotalIncidents(total);
         if (coloredCats.length > 0) setTopCategory(coloredCats[0].name);
         if (platRes.data.length > 0) setTopPlatform(platRes.data[0].name);
@@ -280,7 +284,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* DATA TABLE (Still partially dummy) */}
+        {/* DATA TABLE */}
         <div className="dash-card chart-container scrollable-chart">
             <div className="chart-header">
                 <h3>Incident Breakdown Matrix</h3>
@@ -290,14 +294,24 @@ const Dashboard = () => {
                     <thead>
                         <tr>
                             <th>Incident Type</th>
-                            {platforms.map(p => <th key={p}>{p}</th>)}
+                            <th>X</th>
+                            <th>LinkedIn</th>
+                            <th>Meta</th>
+                            <th>Telegram</th>
+                            <th>TikTok</th>
+                            <th>WhatsApp</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tableData.map((row, i) => (
+                        {matrixData.map((row, i) => (
                             <tr key={i}>
                                 <td className="row-header">{row.category}</td>
-                                {platforms.map(p => <td key={p}>{row[p]}</td>)}
+                                <td>{row.X}</td>
+                                <td>{row.LinkedIn}</td>
+                                <td>{row.Meta}</td>
+                                <td>{row.Telegram}</td>
+                                <td>{row.TikTok}</td>
+                                <td>{row.WhatsApp}</td>
                             </tr>
                         ))}
                     </tbody>
