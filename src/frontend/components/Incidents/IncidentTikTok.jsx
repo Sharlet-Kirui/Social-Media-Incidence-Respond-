@@ -149,7 +149,9 @@ export default function IncidentTikTok() {
         return "status-badge status-rejected"
       }
     }},
-    {headerName:"Actions"}
+    {field: "actions", 
+        headerName: "Actions", 
+        width: 150}
   ]
 
   const paginationModel = { page: 0, pageSize: 10 };
@@ -257,7 +259,7 @@ export default function IncidentTikTok() {
           columns={columns}
           rows={filteredRows}
           initialState={{pagination:paginationModel}}
-          pageSizeOptions={[10,20,30]}
+          pageSizeOptions={[10,20,30, 100]}
           getRowId={(row) => row._id}
         />
       </Paper>
